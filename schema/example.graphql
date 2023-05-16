@@ -1,0 +1,75 @@
+extend type Query {
+    """
+    Look up example by ID
+    """
+    example(
+        """
+        ID of the example
+        """
+        id: ID!
+    ): Example!
+}
+
+extend type Mutation{
+    """
+    Create a new example
+    """
+    createExample(
+        """
+        Name of the example
+        """
+        input: CreateExampleInput!
+    ): ExampleCreatePayload!
+    """
+    Update an existing example
+    """
+    updateExample(
+        """
+        ID of the example
+        """
+        id: ID!
+        """
+        Name of the example
+        """
+        input: UpdateExampleInput!
+    ): ExampleUpdatePayload!
+    """
+    Delete an existing example
+    """
+    deleteExample(
+        """
+        ID of the example
+        """
+        id: ID!
+    ): ExampleDeletePayload!
+}
+
+"""
+Return response for createExample mutation
+"""
+type ExampleCreatePayload {
+    """
+    Created example
+    """
+    example: Example!
+}
+
+"""
+Return response for updateExample mutation
+"""
+type ExampleUpdatePayload {
+    """
+    Updated example
+    """
+    example: Example!
+}
+
+"""
+Return response for deleteExample mutation
+"""
+type ExampleDeletePayload {
+    """
+    Deleted example
+    """
+    deletedID: ID!
+}
