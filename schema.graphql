@@ -141,12 +141,12 @@ input ExampleWhereInput {
 scalar JSON
 type Mutation {
 	"""Create a new example"""
-	createExample(
+	exampleCreate(
 		"""Name of the example"""
 		input: CreateExampleInput!
 	): ExampleCreatePayload!
 	"""Update an existing example"""
-	updateExample(
+	exampleUpdate(
 		"""ID of the example"""
 		id: ID!
 
@@ -154,7 +154,7 @@ type Mutation {
 		input: UpdateExampleInput!
 	): ExampleUpdatePayload!
 	"""Delete an existing example"""
-	deleteExample(
+	exampleDelete(
 		"""ID of the example"""
 		id: ID!
 	): ExampleDeletePayload!

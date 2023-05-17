@@ -14,7 +14,7 @@ extend type Mutation{
     """
     Create a new example
     """
-    createExample(
+    exampleCreate(
         """
         Name of the example
         """
@@ -23,7 +23,7 @@ extend type Mutation{
     """
     Update an existing example
     """
-    updateExample(
+    exampleUpdate(
         """
         ID of the example
         """
@@ -36,7 +36,7 @@ extend type Mutation{
     """
     Delete an existing example
     """
-    deleteExample(
+    exampleDelete(
         """
         ID of the example
         """

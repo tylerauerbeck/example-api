@@ -12,19 +12,19 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// CreateExample is the resolver for the createExample field.
-func (r *mutationResolver) CreateExample(ctx context.Context, input generated.CreateExampleInput) (*ExampleCreatePayload, error) {
-	panic(fmt.Errorf("not implemented: CreateExample - createExample"))
+// ExampleCreate is the resolver for the exampleCreate field.
+func (r *mutationResolver) ExampleCreate(ctx context.Context, input generated.CreateExampleInput) (*ExampleCreatePayload, error) {
+	panic(fmt.Errorf("not implemented: ExampleCreate - exampleCreate"))
 }
 
-// UpdateExample is the resolver for the updateExample field.
-func (r *mutationResolver) UpdateExample(ctx context.Context, id gidx.PrefixedID, input generated.UpdateExampleInput) (*ExampleUpdatePayload, error) {
-	panic(fmt.Errorf("not implemented: UpdateExample - updateExample"))
+// ExampleUpdate is the resolver for the exampleUpdate field.
+func (r *mutationResolver) ExampleUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateExampleInput) (*ExampleUpdatePayload, error) {
+	panic(fmt.Errorf("not implemented: ExampleUpdate - exampleUpdate"))
 }
 
-// DeleteExample is the resolver for the deleteExample field.
-func (r *mutationResolver) DeleteExample(ctx context.Context, id gidx.PrefixedID) (*ExampleDeletePayload, error) {
-	panic(fmt.Errorf("not implemented: DeleteExample - deleteExample"))
+// ExampleDelete is the resolver for the exampleDelete field.
+func (r *mutationResolver) ExampleDelete(ctx context.Context, id gidx.PrefixedID) (*ExampleDeletePayload, error) {
+	panic(fmt.Errorf("not implemented: ExampleDelete - exampleDelete"))
 }
 
 // Example is the resolver for the example field.

@@ -89,9 +89,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateExample func(childComplexity int, input generated.CreateExampleInput) int
-		DeleteExample func(childComplexity int, id gidx.PrefixedID) int
-		UpdateExample func(childComplexity int, id gidx.PrefixedID, input generated.UpdateExampleInput) int
+		ExampleCreate func(childComplexity int, input generated.CreateExampleInput) int
+		ExampleDelete func(childComplexity int, id gidx.PrefixedID) int
+		ExampleUpdate func(childComplexity int, id gidx.PrefixedID, input generated.UpdateExampleInput) int
 	}
 
 	PageInfo struct {
@@ -125,9 +125,9 @@ type ExampleResolver interface {
 	Tenant(ctx context.Context, obj *generated.Example) (*Tenant, error)
 }
 type MutationResolver interface {
-	CreateExample(ctx context.Context, input generated.CreateExampleInput) (*ExampleCreatePayload, error)
-	UpdateExample(ctx context.Context, id gidx.PrefixedID, input generated.UpdateExampleInput) (*ExampleUpdatePayload, error)
-	DeleteExample(ctx context.Context, id gidx.PrefixedID) (*ExampleDeletePayload, error)
+	ExampleCreate(ctx context.Context, input generated.CreateExampleInput) (*ExampleCreatePayload, error)
+	ExampleUpdate(ctx context.Context, id gidx.PrefixedID, input generated.UpdateExampleInput) (*ExampleUpdatePayload, error)
+	ExampleDelete(ctx context.Context, id gidx.PrefixedID) (*ExampleDeletePayload, error)
 }
 type QueryResolver interface {
 	Example(ctx context.Context, id gidx.PrefixedID) (*generated.Example, error)
@@ -273,41 +273,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ExampleUpdatePayload.Example(childComplexity), true
 
-	case "Mutation.createExample":
-		if e.complexity.Mutation.CreateExample == nil {
+	case "Mutation.exampleCreate":
+		if e.complexity.Mutation.ExampleCreate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_createExample_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_exampleCreate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateExample(childComplexity, args["input"].(generated.CreateExampleInput)), true
+		return e.complexity.Mutation.ExampleCreate(childComplexity, args["input"].(generated.CreateExampleInput)), true
 
-	case "Mutation.deleteExample":
-		if e.complexity.Mutation.DeleteExample == nil {
+	case "Mutation.exampleDelete":
+		if e.complexity.Mutation.ExampleDelete == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_deleteExample_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_exampleDelete_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteExample(childComplexity, args["id"].(gidx.PrefixedID)), true
+		return e.complexity.Mutation.ExampleDelete(childComplexity, args["id"].(gidx.PrefixedID)), true
 
-	case "Mutation.updateExample":
-		if e.complexity.Mutation.UpdateExample == nil {
+	case "Mutation.exampleUpdate":
+		if e.complexity.Mutation.ExampleUpdate == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_updateExample_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_exampleUpdate_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateExample(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateExampleInput)), true
+		return e.complexity.Mutation.ExampleUpdate(childComplexity, args["id"].(gidx.PrefixedID), args["input"].(generated.UpdateExampleInput)), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -646,7 +646,7 @@ extend type Mutation{
     """
     Create a new example
     """
-    createExample(
+    exampleCreate(
         """
         Name of the example
         """
@@ -655,7 +655,7 @@ extend type Mutation{
     """
     Update an existing example
     """
-    updateExample(
+    exampleUpdate(
         """
         ID of the example
         """
@@ -668,7 +668,7 @@ extend type Mutation{
     """
     Delete an existing example
     """
-    deleteExample(
+    exampleDelete(
         """
         ID of the example
         """
@@ -821,7 +821,7 @@ func (ec *executionContext) field_Entity_findTenantByID_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createExample_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_exampleCreate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 generated.CreateExampleInput
@@ -836,7 +836,7 @@ func (ec *executionContext) field_Mutation_createExample_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteExample_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_exampleDelete_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -851,7 +851,7 @@ func (ec *executionContext) field_Mutation_deleteExample_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateExample_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_exampleUpdate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 gidx.PrefixedID
@@ -1822,8 +1822,8 @@ func (ec *executionContext) fieldContext_ExampleUpdatePayload_example(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createExample(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createExample(ctx, field)
+func (ec *executionContext) _Mutation_exampleCreate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_exampleCreate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1836,7 +1836,7 @@ func (ec *executionContext) _Mutation_createExample(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateExample(rctx, fc.Args["input"].(generated.CreateExampleInput))
+		return ec.resolvers.Mutation().ExampleCreate(rctx, fc.Args["input"].(generated.CreateExampleInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1853,7 +1853,7 @@ func (ec *executionContext) _Mutation_createExample(ctx context.Context, field g
 	return ec.marshalNExampleCreatePayload2ᚖgoᚗinfratographerᚗcomᚋexampleᚑapiᚋinternalᚋgraphapiᚐExampleCreatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createExample(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_exampleCreate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1874,15 +1874,15 @@ func (ec *executionContext) fieldContext_Mutation_createExample(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createExample_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_exampleCreate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_updateExample(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateExample(ctx, field)
+func (ec *executionContext) _Mutation_exampleUpdate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_exampleUpdate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1895,7 +1895,7 @@ func (ec *executionContext) _Mutation_updateExample(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateExample(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateExampleInput))
+		return ec.resolvers.Mutation().ExampleUpdate(rctx, fc.Args["id"].(gidx.PrefixedID), fc.Args["input"].(generated.UpdateExampleInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1912,7 +1912,7 @@ func (ec *executionContext) _Mutation_updateExample(ctx context.Context, field g
 	return ec.marshalNExampleUpdatePayload2ᚖgoᚗinfratographerᚗcomᚋexampleᚑapiᚋinternalᚋgraphapiᚐExampleUpdatePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_updateExample(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_exampleUpdate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1933,15 +1933,15 @@ func (ec *executionContext) fieldContext_Mutation_updateExample(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateExample_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_exampleUpdate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_deleteExample(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteExample(ctx, field)
+func (ec *executionContext) _Mutation_exampleDelete(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_exampleDelete(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1954,7 +1954,7 @@ func (ec *executionContext) _Mutation_deleteExample(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteExample(rctx, fc.Args["id"].(gidx.PrefixedID))
+		return ec.resolvers.Mutation().ExampleDelete(rctx, fc.Args["id"].(gidx.PrefixedID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1971,7 +1971,7 @@ func (ec *executionContext) _Mutation_deleteExample(ctx context.Context, field g
 	return ec.marshalNExampleDeletePayload2ᚖgoᚗinfratographerᚗcomᚋexampleᚑapiᚋinternalᚋgraphapiᚐExampleDeletePayload(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_deleteExample(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_exampleDelete(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1992,7 +1992,7 @@ func (ec *executionContext) fieldContext_Mutation_deleteExample(ctx context.Cont
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteExample_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_exampleDelete_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -5386,28 +5386,28 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "createExample":
+		case "exampleCreate":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createExample(ctx, field)
+				return ec._Mutation_exampleCreate(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "updateExample":
+		case "exampleUpdate":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateExample(ctx, field)
+				return ec._Mutation_exampleUpdate(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "deleteExample":
+		case "exampleDelete":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteExample(ctx, field)
+				return ec._Mutation_exampleDelete(ctx, field)
 			})
 
 			if out.Values[i] == graphql.Null {
