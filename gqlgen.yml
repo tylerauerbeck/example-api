@@ -4,27 +4,27 @@ schema:
 
 # Where should the generated server code go?
 exec:
-  filename: internal/graphapi/gen_server.go
-  package: graphapi
+  filename: internal/api/gen_server.go
+  package: api
 
 # Uncomment to enable federation
 federation:
-  filename: internal/graphapi/gen_federation.go
-  package: graphapi
+  filename: internal/api/gen_federation.go
+  package: api
   version: 2
 
 # Where should any generated models go?
 model:
-  filename: internal/graphapi/gen_models.go
-  package: graphapi
+  filename: internal/api/gen_models.go
+  package: api
 
 # Where should the resolver implementations go?
 # You, the developer, need to implement the functions
 # inside of the *.resolvers.go files.
 resolver:
   layout: follow-schema
-  dir: internal/graphapi
-  package: graphapi
+  dir: internal/api
+  package: api
   filename_template: "{name}.resolvers.go"
 
 # Optional: turn on use ` + "`" + `gqlgen:"fieldName"` + "`" + ` tags in your models
@@ -45,10 +45,14 @@ resolver:
 
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
+
+directives:
+  prefixedID:
+    skip_runtime: true
+
 autobind:
-  - "go.infratographer.com/example-api/internal/graphapi"
+  - "go.infratographer.com/example-api/internal/api"
   - "go.infratographer.com/example-api/internal/ent/generated"
-  - "go.infratographer.com/example-api/internal/ent/generated/example"
 
 # This section declares type mapping between the GraphQL and go type systems
 #

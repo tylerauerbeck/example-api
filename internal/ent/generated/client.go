@@ -28,7 +28,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 )
 
 // Client is the client that holds all ent builders.
@@ -36,8 +36,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Example is the client for interacting with the Example builders.
-	Example *ExampleClient
+	// Todo is the client for interacting with the Todo builders.
+	Todo *TodoClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -51,7 +51,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Example = NewExampleClient(c.config)
+	c.Todo = NewTodoClient(c.config)
 }
 
 type (
@@ -132,9 +132,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Example: NewExampleClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Todo:   NewTodoClient(cfg),
 	}, nil
 }
 
@@ -152,16 +152,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Example: NewExampleClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Todo:   NewTodoClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Example.
+//		Todo.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -183,111 +183,111 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Example.Use(hooks...)
+	c.Todo.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Example.Intercept(interceptors...)
+	c.Todo.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ExampleMutation:
-		return c.Example.mutate(ctx, m)
+	case *TodoMutation:
+		return c.Todo.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("generated: unknown mutation type %T", m)
 	}
 }
 
-// ExampleClient is a client for the Example schema.
-type ExampleClient struct {
+// TodoClient is a client for the Todo schema.
+type TodoClient struct {
 	config
 }
 
-// NewExampleClient returns a client for the Example from the given config.
-func NewExampleClient(c config) *ExampleClient {
-	return &ExampleClient{config: c}
+// NewTodoClient returns a client for the Todo from the given config.
+func NewTodoClient(c config) *TodoClient {
+	return &TodoClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `example.Hooks(f(g(h())))`.
-func (c *ExampleClient) Use(hooks ...Hook) {
-	c.hooks.Example = append(c.hooks.Example, hooks...)
+// A call to `Use(f, g, h)` equals to `todo.Hooks(f(g(h())))`.
+func (c *TodoClient) Use(hooks ...Hook) {
+	c.hooks.Todo = append(c.hooks.Todo, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `example.Intercept(f(g(h())))`.
-func (c *ExampleClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Example = append(c.inters.Example, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `todo.Intercept(f(g(h())))`.
+func (c *TodoClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Todo = append(c.inters.Todo, interceptors...)
 }
 
-// Create returns a builder for creating a Example entity.
-func (c *ExampleClient) Create() *ExampleCreate {
-	mutation := newExampleMutation(c.config, OpCreate)
-	return &ExampleCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Todo entity.
+func (c *TodoClient) Create() *TodoCreate {
+	mutation := newTodoMutation(c.config, OpCreate)
+	return &TodoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Example entities.
-func (c *ExampleClient) CreateBulk(builders ...*ExampleCreate) *ExampleCreateBulk {
-	return &ExampleCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Todo entities.
+func (c *TodoClient) CreateBulk(builders ...*TodoCreate) *TodoCreateBulk {
+	return &TodoCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Example.
-func (c *ExampleClient) Update() *ExampleUpdate {
-	mutation := newExampleMutation(c.config, OpUpdate)
-	return &ExampleUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Todo.
+func (c *TodoClient) Update() *TodoUpdate {
+	mutation := newTodoMutation(c.config, OpUpdate)
+	return &TodoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ExampleClient) UpdateOne(e *Example) *ExampleUpdateOne {
-	mutation := newExampleMutation(c.config, OpUpdateOne, withExample(e))
-	return &ExampleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TodoClient) UpdateOne(t *Todo) *TodoUpdateOne {
+	mutation := newTodoMutation(c.config, OpUpdateOne, withTodo(t))
+	return &TodoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ExampleClient) UpdateOneID(id gidx.PrefixedID) *ExampleUpdateOne {
-	mutation := newExampleMutation(c.config, OpUpdateOne, withExampleID(id))
-	return &ExampleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TodoClient) UpdateOneID(id gidx.PrefixedID) *TodoUpdateOne {
+	mutation := newTodoMutation(c.config, OpUpdateOne, withTodoID(id))
+	return &TodoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Example.
-func (c *ExampleClient) Delete() *ExampleDelete {
-	mutation := newExampleMutation(c.config, OpDelete)
-	return &ExampleDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Todo.
+func (c *TodoClient) Delete() *TodoDelete {
+	mutation := newTodoMutation(c.config, OpDelete)
+	return &TodoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ExampleClient) DeleteOne(e *Example) *ExampleDeleteOne {
-	return c.DeleteOneID(e.ID)
+func (c *TodoClient) DeleteOne(t *Todo) *TodoDeleteOne {
+	return c.DeleteOneID(t.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ExampleClient) DeleteOneID(id gidx.PrefixedID) *ExampleDeleteOne {
-	builder := c.Delete().Where(example.ID(id))
+func (c *TodoClient) DeleteOneID(id gidx.PrefixedID) *TodoDeleteOne {
+	builder := c.Delete().Where(todo.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ExampleDeleteOne{builder}
+	return &TodoDeleteOne{builder}
 }
 
-// Query returns a query builder for Example.
-func (c *ExampleClient) Query() *ExampleQuery {
-	return &ExampleQuery{
+// Query returns a query builder for Todo.
+func (c *TodoClient) Query() *TodoQuery {
+	return &TodoQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeExample},
+		ctx:    &QueryContext{Type: TypeTodo},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Example entity by its id.
-func (c *ExampleClient) Get(ctx context.Context, id gidx.PrefixedID) (*Example, error) {
-	return c.Query().Where(example.ID(id)).Only(ctx)
+// Get returns a Todo entity by its id.
+func (c *TodoClient) Get(ctx context.Context, id gidx.PrefixedID) (*Todo, error) {
+	return c.Query().Where(todo.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ExampleClient) GetX(ctx context.Context, id gidx.PrefixedID) *Example {
+func (c *TodoClient) GetX(ctx context.Context, id gidx.PrefixedID) *Todo {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -296,36 +296,36 @@ func (c *ExampleClient) GetX(ctx context.Context, id gidx.PrefixedID) *Example {
 }
 
 // Hooks returns the client hooks.
-func (c *ExampleClient) Hooks() []Hook {
-	return c.hooks.Example
+func (c *TodoClient) Hooks() []Hook {
+	return c.hooks.Todo
 }
 
 // Interceptors returns the client interceptors.
-func (c *ExampleClient) Interceptors() []Interceptor {
-	return c.inters.Example
+func (c *TodoClient) Interceptors() []Interceptor {
+	return c.inters.Todo
 }
 
-func (c *ExampleClient) mutate(ctx context.Context, m *ExampleMutation) (Value, error) {
+func (c *TodoClient) mutate(ctx context.Context, m *TodoMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&ExampleCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TodoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&ExampleUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TodoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&ExampleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TodoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&ExampleDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&TodoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("generated: unknown Example mutation op: %q", m.Op())
+		return nil, fmt.Errorf("generated: unknown Todo mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Example []ent.Hook
+		Todo []ent.Hook
 	}
 	inters struct {
-		Example []ent.Interceptor
+		Todo []ent.Interceptor
 	}
 )

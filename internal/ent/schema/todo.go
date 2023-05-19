@@ -11,46 +11,46 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// Example holds the schema definition for the Example entity.
-type Example struct {
+// Todo holds the schema definition for the Todo entity.
+type Todo struct {
 	ent.Schema
 }
 
-// Mixin of the Example type
-func (Example) Mixin() []ent.Mixin {
+// Mixin of the Todo type
+func (Todo) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		entx.NewTimestampMixin(),
 	}
 }
 
-// Fields of the Example.
-func (Example) Fields() []ent.Field {
+// Fields of the Todo.
+func (Todo) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").
 			GoType(gidx.PrefixedID("")).
 			Unique().
 			Immutable().
-			Comment("The ID of the Example.").
+			Comment("The ID of the Todo.").
 			Annotations(
 				entgql.OrderField("ID"),
 			).
-			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(ExamplePrefix) }),
+			DefaultFunc(func() gidx.PrefixedID { return gidx.MustNewID(TodoPrefix) }),
 		field.Text("name").
 			NotEmpty().
-			Comment("The name of the example.").
+			Comment("The name of the todo.").
 			Annotations(
 				entgql.OrderField("NAME"),
 			),
 		field.Text("description").
-			NotEmpty().
-			Comment("The name of the example.").
+			Optional().
+			Comment("The description of the todo.").
 			Annotations(
 				entgql.OrderField("DESCRIPTION"),
 			),
 		field.String("tenant_id").
 			GoType(gidx.PrefixedID("")).
 			Immutable().
-			Comment("The ID for the tenant for this example.").
+			Comment("The ID for the tenant for this todo.").
 			Annotations(
 				entgql.QueryField(),
 				entgql.Type("ID"),
@@ -60,27 +60,27 @@ func (Example) Fields() []ent.Field {
 	}
 }
 
-// Edges of the Example.
-func (Example) Edges() []ent.Edge {
+// Edges of the Todo.
+func (Todo) Edges() []ent.Edge {
 	return nil
 }
 
-// Indexes of the Example.
-func (Example) Indexes() []ent.Index {
+// Indexes of the Todo.
+func (Todo) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("tenant_id"),
 	}
 }
 
-// Annotations of the Example
-func (Example) Annotations() []schema.Annotation {
+// Annotations of the Todo
+func (Todo) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.GraphKeyDirective("id"),
-		schema.Comment("Represents an example node on the graph."),
+		schema.Comment("Represents an todo todo on the graph."),
 		entgql.RelayConnection(),
 		entgql.Mutations(
-			entgql.MutationCreate().Description("Create a new example node."),
-			entgql.MutationUpdate().Description("Update an existing example node."),
+			entgql.MutationCreate().Description("Create a new todo todo."),
+			entgql.MutationUpdate().Description("Update an existing todo todo."),
 		),
 	}
 }

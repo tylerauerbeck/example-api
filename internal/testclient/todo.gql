@@ -1,0 +1,12 @@
+query GetTodo($id: ID!) {
+    todo(id: $id) {
+        id
+        name
+        description
+        tenant{
+            id
+        }
+        createdAt
+        updatedAt
+    }
+}

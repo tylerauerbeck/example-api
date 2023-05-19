@@ -1,6 +1,6 @@
 extend type Tenant @key(fields: "id") {
   id: ID! @external
-  examples(
+  todo(
     """
     Returns the elements in the list that come after the specified cursor.
     """
@@ -22,20 +22,20 @@ extend type Tenant @key(fields: "id") {
     last: Int
 
     """
-    Ordering options for Examples returned from the connection.
+    Ordering options for Todo returned from the connection.
     """
-    orderBy: ExampleOrder
+    orderBy: TodoOrder
 
     """
-    Filtering options for Examples returned from the connection.
+    Filtering options for Todo returned from the connection.
     """
-    where: ExampleWhereInput
-  ): ExampleConnection! @goField(forceResolver: true)
+    where: TodoWhereInput
+  ): TodoConnection! @goField(forceResolver: true)
 }
 
-extend type Example {
+extend type Todo {
   """
-  The tenant of the example.
+  The tenant of the todo.
   """
   tenant: Tenant! @goField(forceResolver: true)
 }

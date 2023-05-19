@@ -22,41 +22,41 @@ import (
 )
 
 var (
-	// ExamplesColumns holds the columns for the "examples" table.
-	ExamplesColumns = []*schema.Column{
+	// TodosColumns holds the columns for the "todos" table.
+	TodosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Size: 2147483647},
-		{Name: "description", Type: field.TypeString, Size: 2147483647},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "tenant_id", Type: field.TypeString},
 	}
-	// ExamplesTable holds the schema information for the "examples" table.
-	ExamplesTable = &schema.Table{
-		Name:       "examples",
-		Columns:    ExamplesColumns,
-		PrimaryKey: []*schema.Column{ExamplesColumns[0]},
+	// TodosTable holds the schema information for the "todos" table.
+	TodosTable = &schema.Table{
+		Name:       "todos",
+		Columns:    TodosColumns,
+		PrimaryKey: []*schema.Column{TodosColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "example_created_at",
+				Name:    "todo_created_at",
 				Unique:  false,
-				Columns: []*schema.Column{ExamplesColumns[1]},
+				Columns: []*schema.Column{TodosColumns[1]},
 			},
 			{
-				Name:    "example_updated_at",
+				Name:    "todo_updated_at",
 				Unique:  false,
-				Columns: []*schema.Column{ExamplesColumns[2]},
+				Columns: []*schema.Column{TodosColumns[2]},
 			},
 			{
-				Name:    "example_tenant_id",
+				Name:    "todo_tenant_id",
 				Unique:  false,
-				Columns: []*schema.Column{ExamplesColumns[5]},
+				Columns: []*schema.Column{TodosColumns[5]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ExamplesTable,
+		TodosTable,
 	}
 )
 

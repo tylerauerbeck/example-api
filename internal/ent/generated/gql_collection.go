@@ -22,49 +22,49 @@ import (
 	"entgo.io/contrib/entgql"
 	"entgo.io/ent/dialect/sql"
 	"github.com/99designs/gqlgen/graphql"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 )
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
-func (e *ExampleQuery) CollectFields(ctx context.Context, satisfies ...string) (*ExampleQuery, error) {
+func (t *TodoQuery) CollectFields(ctx context.Context, satisfies ...string) (*TodoQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {
-		return e, nil
+		return t, nil
 	}
-	if err := e.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+	if err := t.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
 		return nil, err
 	}
-	return e, nil
+	return t, nil
 }
 
-func (e *ExampleQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
+func (t *TodoQuery) collectField(ctx context.Context, opCtx *graphql.OperationContext, collected graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
 	var (
 		unknownSeen    bool
-		fieldSeen      = make(map[string]struct{}, len(example.Columns))
-		selectedFields = []string{example.FieldID}
+		fieldSeen      = make(map[string]struct{}, len(todo.Columns))
+		selectedFields = []string{todo.FieldID}
 	)
 	for _, field := range graphql.CollectFields(opCtx, collected.Selections, satisfies) {
 		switch field.Name {
 		case "createdAt":
-			if _, ok := fieldSeen[example.FieldCreatedAt]; !ok {
-				selectedFields = append(selectedFields, example.FieldCreatedAt)
-				fieldSeen[example.FieldCreatedAt] = struct{}{}
+			if _, ok := fieldSeen[todo.FieldCreatedAt]; !ok {
+				selectedFields = append(selectedFields, todo.FieldCreatedAt)
+				fieldSeen[todo.FieldCreatedAt] = struct{}{}
 			}
 		case "updatedAt":
-			if _, ok := fieldSeen[example.FieldUpdatedAt]; !ok {
-				selectedFields = append(selectedFields, example.FieldUpdatedAt)
-				fieldSeen[example.FieldUpdatedAt] = struct{}{}
+			if _, ok := fieldSeen[todo.FieldUpdatedAt]; !ok {
+				selectedFields = append(selectedFields, todo.FieldUpdatedAt)
+				fieldSeen[todo.FieldUpdatedAt] = struct{}{}
 			}
 		case "name":
-			if _, ok := fieldSeen[example.FieldName]; !ok {
-				selectedFields = append(selectedFields, example.FieldName)
-				fieldSeen[example.FieldName] = struct{}{}
+			if _, ok := fieldSeen[todo.FieldName]; !ok {
+				selectedFields = append(selectedFields, todo.FieldName)
+				fieldSeen[todo.FieldName] = struct{}{}
 			}
 		case "description":
-			if _, ok := fieldSeen[example.FieldDescription]; !ok {
-				selectedFields = append(selectedFields, example.FieldDescription)
-				fieldSeen[example.FieldDescription] = struct{}{}
+			if _, ok := fieldSeen[todo.FieldDescription]; !ok {
+				selectedFields = append(selectedFields, todo.FieldDescription)
+				fieldSeen[todo.FieldDescription] = struct{}{}
 			}
 		case "id":
 		case "__typename":
@@ -73,19 +73,19 @@ func (e *ExampleQuery) collectField(ctx context.Context, opCtx *graphql.Operatio
 		}
 	}
 	if !unknownSeen {
-		e.Select(selectedFields...)
+		t.Select(selectedFields...)
 	}
 	return nil
 }
 
-type examplePaginateArgs struct {
+type todoPaginateArgs struct {
 	first, last   *int
 	after, before *Cursor
-	opts          []ExamplePaginateOption
+	opts          []TodoPaginateOption
 }
 
-func newExamplePaginateArgs(rv map[string]any) *examplePaginateArgs {
-	args := &examplePaginateArgs{}
+func newTodoPaginateArgs(rv map[string]any) *todoPaginateArgs {
+	args := &todoPaginateArgs{}
 	if rv == nil {
 		return args
 	}
@@ -106,7 +106,7 @@ func newExamplePaginateArgs(rv map[string]any) *examplePaginateArgs {
 		case map[string]any:
 			var (
 				err1, err2 error
-				order      = &ExampleOrder{Field: &ExampleOrderField{}, Direction: entgql.OrderDirectionAsc}
+				order      = &TodoOrder{Field: &TodoOrderField{}, Direction: entgql.OrderDirectionAsc}
 			)
 			if d, ok := v[directionField]; ok {
 				err1 = order.Direction.UnmarshalGQL(d)
@@ -115,16 +115,16 @@ func newExamplePaginateArgs(rv map[string]any) *examplePaginateArgs {
 				err2 = order.Field.UnmarshalGQL(f)
 			}
 			if err1 == nil && err2 == nil {
-				args.opts = append(args.opts, WithExampleOrder(order))
+				args.opts = append(args.opts, WithTodoOrder(order))
 			}
-		case *ExampleOrder:
+		case *TodoOrder:
 			if v != nil {
-				args.opts = append(args.opts, WithExampleOrder(v))
+				args.opts = append(args.opts, WithTodoOrder(v))
 			}
 		}
 	}
-	if v, ok := rv[whereField].(*ExampleWhereInput); ok {
-		args.opts = append(args.opts, WithExampleFilter(v.Filter))
+	if v, ok := rv[whereField].(*TodoWhereInput); ok {
+		args.opts = append(args.opts, WithTodoFilter(v.Filter))
 	}
 	return args
 }

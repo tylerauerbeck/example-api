@@ -23,16 +23,16 @@ import (
 	"go.infratographer.com/example-api/internal/ent/generated"
 )
 
-// The ExampleFunc type is an adapter to allow the use of ordinary
-// function as Example mutator.
-type ExampleFunc func(context.Context, *generated.ExampleMutation) (generated.Value, error)
+// The TodoFunc type is an adapter to allow the use of ordinary
+// function as Todo mutator.
+type TodoFunc func(context.Context, *generated.TodoMutation) (generated.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ExampleFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
-	if mv, ok := m.(*generated.ExampleMutation); ok {
+func (f TodoFunc) Mutate(ctx context.Context, m generated.Mutation) (generated.Value, error) {
+	if mv, ok := m.(*generated.TodoMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.ExampleMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *generated.TodoMutation", m)
 }
 
 // Condition is a hook condition function.

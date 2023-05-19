@@ -26,7 +26,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -87,7 +87,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			example.Table: example.ValidColumn,
+			todo.Table: todo.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

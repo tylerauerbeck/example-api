@@ -23,7 +23,7 @@ import (
 	"entgo.io/contrib/entgql"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -33,7 +33,7 @@ type Noder interface {
 }
 
 // IsNode implements the Node interface check for GQLGen.
-func (n *Example) IsNode() {}
+func (n *Todo) IsNode() {}
 
 var errNodeInvalidID = &NotFoundError{"node"}
 
@@ -93,14 +93,14 @@ func (c *Client) Noder(ctx context.Context, id gidx.PrefixedID, opts ...NodeOpti
 
 func (c *Client) noder(ctx context.Context, table string, id gidx.PrefixedID) (Noder, error) {
 	switch table {
-	case example.Table:
+	case todo.Table:
 		var uid gidx.PrefixedID
 		if err := uid.UnmarshalGQL(id); err != nil {
 			return nil, err
 		}
-		query := c.Example.Query().
-			Where(example.ID(uid))
-		query, err := query.CollectFields(ctx, "Example")
+		query := c.Todo.Query().
+			Where(todo.ID(uid))
+		query, err := query.CollectFields(ctx, "Todo")
 		if err != nil {
 			return nil, err
 		}
@@ -182,10 +182,10 @@ func (c *Client) noders(ctx context.Context, table string, ids []gidx.PrefixedID
 		idmap[id] = append(idmap[id], &noders[i])
 	}
 	switch table {
-	case example.Table:
-		query := c.Example.Query().
-			Where(example.IDIn(ids...))
-		query, err := query.CollectFields(ctx, "Example")
+	case todo.Table:
+		query := c.Todo.Query().
+			Where(todo.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Todo")
 		if err != nil {
 			return nil, err
 		}

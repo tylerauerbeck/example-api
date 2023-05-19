@@ -21,17 +21,17 @@ import (
 	"fmt"
 	"time"
 
-	"go.infratographer.com/example-api/internal/ent/generated/example"
 	"go.infratographer.com/example-api/internal/ent/generated/predicate"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 	"go.infratographer.com/x/gidx"
 )
 
-// ExampleWhereInput represents a where input for filtering Example queries.
-type ExampleWhereInput struct {
-	Predicates []predicate.Example  `json:"-"`
-	Not        *ExampleWhereInput   `json:"not,omitempty"`
-	Or         []*ExampleWhereInput `json:"or,omitempty"`
-	And        []*ExampleWhereInput `json:"and,omitempty"`
+// TodoWhereInput represents a where input for filtering Todo queries.
+type TodoWhereInput struct {
+	Predicates []predicate.Todo  `json:"-"`
+	Not        *TodoWhereInput   `json:"not,omitempty"`
+	Or         []*TodoWhereInput `json:"or,omitempty"`
+	And        []*TodoWhereInput `json:"and,omitempty"`
 
 	// "id" field predicates.
 	ID      *gidx.PrefixedID  `json:"id,omitempty"`
@@ -90,23 +90,25 @@ type ExampleWhereInput struct {
 	DescriptionContains     *string  `json:"descriptionContains,omitempty"`
 	DescriptionHasPrefix    *string  `json:"descriptionHasPrefix,omitempty"`
 	DescriptionHasSuffix    *string  `json:"descriptionHasSuffix,omitempty"`
+	DescriptionIsNil        bool     `json:"descriptionIsNil,omitempty"`
+	DescriptionNotNil       bool     `json:"descriptionNotNil,omitempty"`
 	DescriptionEqualFold    *string  `json:"descriptionEqualFold,omitempty"`
 	DescriptionContainsFold *string  `json:"descriptionContainsFold,omitempty"`
 }
 
 // AddPredicates adds custom predicates to the where input to be used during the filtering phase.
-func (i *ExampleWhereInput) AddPredicates(predicates ...predicate.Example) {
+func (i *TodoWhereInput) AddPredicates(predicates ...predicate.Todo) {
 	i.Predicates = append(i.Predicates, predicates...)
 }
 
-// Filter applies the ExampleWhereInput filter on the ExampleQuery builder.
-func (i *ExampleWhereInput) Filter(q *ExampleQuery) (*ExampleQuery, error) {
+// Filter applies the TodoWhereInput filter on the TodoQuery builder.
+func (i *TodoWhereInput) Filter(q *TodoQuery) (*TodoQuery, error) {
 	if i == nil {
 		return q, nil
 	}
 	p, err := i.P()
 	if err != nil {
-		if err == ErrEmptyExampleWhereInput {
+		if err == ErrEmptyTodoWhereInput {
 			return q, nil
 		}
 		return nil, err
@@ -114,19 +116,19 @@ func (i *ExampleWhereInput) Filter(q *ExampleQuery) (*ExampleQuery, error) {
 	return q.Where(p), nil
 }
 
-// ErrEmptyExampleWhereInput is returned in case the ExampleWhereInput is empty.
-var ErrEmptyExampleWhereInput = errors.New("generated: empty predicate ExampleWhereInput")
+// ErrEmptyTodoWhereInput is returned in case the TodoWhereInput is empty.
+var ErrEmptyTodoWhereInput = errors.New("generated: empty predicate TodoWhereInput")
 
-// P returns a predicate for filtering examples.
+// P returns a predicate for filtering todos.
 // An error is returned if the input is empty or invalid.
-func (i *ExampleWhereInput) P() (predicate.Example, error) {
-	var predicates []predicate.Example
+func (i *TodoWhereInput) P() (predicate.Todo, error) {
+	var predicates []predicate.Todo
 	if i.Not != nil {
 		p, err := i.Not.P()
 		if err != nil {
 			return nil, fmt.Errorf("%w: field 'not'", err)
 		}
-		predicates = append(predicates, example.Not(p))
+		predicates = append(predicates, todo.Not(p))
 	}
 	switch n := len(i.Or); {
 	case n == 1:
@@ -136,7 +138,7 @@ func (i *ExampleWhereInput) P() (predicate.Example, error) {
 		}
 		predicates = append(predicates, p)
 	case n > 1:
-		or := make([]predicate.Example, 0, n)
+		or := make([]predicate.Todo, 0, n)
 		for _, w := range i.Or {
 			p, err := w.P()
 			if err != nil {
@@ -144,7 +146,7 @@ func (i *ExampleWhereInput) P() (predicate.Example, error) {
 			}
 			or = append(or, p)
 		}
-		predicates = append(predicates, example.Or(or...))
+		predicates = append(predicates, todo.Or(or...))
 	}
 	switch n := len(i.And); {
 	case n == 1:
@@ -154,7 +156,7 @@ func (i *ExampleWhereInput) P() (predicate.Example, error) {
 		}
 		predicates = append(predicates, p)
 	case n > 1:
-		and := make([]predicate.Example, 0, n)
+		and := make([]predicate.Todo, 0, n)
 		for _, w := range i.And {
 			p, err := w.P()
 			if err != nil {
@@ -162,166 +164,172 @@ func (i *ExampleWhereInput) P() (predicate.Example, error) {
 			}
 			and = append(and, p)
 		}
-		predicates = append(predicates, example.And(and...))
+		predicates = append(predicates, todo.And(and...))
 	}
 	predicates = append(predicates, i.Predicates...)
 	if i.ID != nil {
-		predicates = append(predicates, example.IDEQ(*i.ID))
+		predicates = append(predicates, todo.IDEQ(*i.ID))
 	}
 	if i.IDNEQ != nil {
-		predicates = append(predicates, example.IDNEQ(*i.IDNEQ))
+		predicates = append(predicates, todo.IDNEQ(*i.IDNEQ))
 	}
 	if len(i.IDIn) > 0 {
-		predicates = append(predicates, example.IDIn(i.IDIn...))
+		predicates = append(predicates, todo.IDIn(i.IDIn...))
 	}
 	if len(i.IDNotIn) > 0 {
-		predicates = append(predicates, example.IDNotIn(i.IDNotIn...))
+		predicates = append(predicates, todo.IDNotIn(i.IDNotIn...))
 	}
 	if i.IDGT != nil {
-		predicates = append(predicates, example.IDGT(*i.IDGT))
+		predicates = append(predicates, todo.IDGT(*i.IDGT))
 	}
 	if i.IDGTE != nil {
-		predicates = append(predicates, example.IDGTE(*i.IDGTE))
+		predicates = append(predicates, todo.IDGTE(*i.IDGTE))
 	}
 	if i.IDLT != nil {
-		predicates = append(predicates, example.IDLT(*i.IDLT))
+		predicates = append(predicates, todo.IDLT(*i.IDLT))
 	}
 	if i.IDLTE != nil {
-		predicates = append(predicates, example.IDLTE(*i.IDLTE))
+		predicates = append(predicates, todo.IDLTE(*i.IDLTE))
 	}
 	if i.CreatedAt != nil {
-		predicates = append(predicates, example.CreatedAtEQ(*i.CreatedAt))
+		predicates = append(predicates, todo.CreatedAtEQ(*i.CreatedAt))
 	}
 	if i.CreatedAtNEQ != nil {
-		predicates = append(predicates, example.CreatedAtNEQ(*i.CreatedAtNEQ))
+		predicates = append(predicates, todo.CreatedAtNEQ(*i.CreatedAtNEQ))
 	}
 	if len(i.CreatedAtIn) > 0 {
-		predicates = append(predicates, example.CreatedAtIn(i.CreatedAtIn...))
+		predicates = append(predicates, todo.CreatedAtIn(i.CreatedAtIn...))
 	}
 	if len(i.CreatedAtNotIn) > 0 {
-		predicates = append(predicates, example.CreatedAtNotIn(i.CreatedAtNotIn...))
+		predicates = append(predicates, todo.CreatedAtNotIn(i.CreatedAtNotIn...))
 	}
 	if i.CreatedAtGT != nil {
-		predicates = append(predicates, example.CreatedAtGT(*i.CreatedAtGT))
+		predicates = append(predicates, todo.CreatedAtGT(*i.CreatedAtGT))
 	}
 	if i.CreatedAtGTE != nil {
-		predicates = append(predicates, example.CreatedAtGTE(*i.CreatedAtGTE))
+		predicates = append(predicates, todo.CreatedAtGTE(*i.CreatedAtGTE))
 	}
 	if i.CreatedAtLT != nil {
-		predicates = append(predicates, example.CreatedAtLT(*i.CreatedAtLT))
+		predicates = append(predicates, todo.CreatedAtLT(*i.CreatedAtLT))
 	}
 	if i.CreatedAtLTE != nil {
-		predicates = append(predicates, example.CreatedAtLTE(*i.CreatedAtLTE))
+		predicates = append(predicates, todo.CreatedAtLTE(*i.CreatedAtLTE))
 	}
 	if i.UpdatedAt != nil {
-		predicates = append(predicates, example.UpdatedAtEQ(*i.UpdatedAt))
+		predicates = append(predicates, todo.UpdatedAtEQ(*i.UpdatedAt))
 	}
 	if i.UpdatedAtNEQ != nil {
-		predicates = append(predicates, example.UpdatedAtNEQ(*i.UpdatedAtNEQ))
+		predicates = append(predicates, todo.UpdatedAtNEQ(*i.UpdatedAtNEQ))
 	}
 	if len(i.UpdatedAtIn) > 0 {
-		predicates = append(predicates, example.UpdatedAtIn(i.UpdatedAtIn...))
+		predicates = append(predicates, todo.UpdatedAtIn(i.UpdatedAtIn...))
 	}
 	if len(i.UpdatedAtNotIn) > 0 {
-		predicates = append(predicates, example.UpdatedAtNotIn(i.UpdatedAtNotIn...))
+		predicates = append(predicates, todo.UpdatedAtNotIn(i.UpdatedAtNotIn...))
 	}
 	if i.UpdatedAtGT != nil {
-		predicates = append(predicates, example.UpdatedAtGT(*i.UpdatedAtGT))
+		predicates = append(predicates, todo.UpdatedAtGT(*i.UpdatedAtGT))
 	}
 	if i.UpdatedAtGTE != nil {
-		predicates = append(predicates, example.UpdatedAtGTE(*i.UpdatedAtGTE))
+		predicates = append(predicates, todo.UpdatedAtGTE(*i.UpdatedAtGTE))
 	}
 	if i.UpdatedAtLT != nil {
-		predicates = append(predicates, example.UpdatedAtLT(*i.UpdatedAtLT))
+		predicates = append(predicates, todo.UpdatedAtLT(*i.UpdatedAtLT))
 	}
 	if i.UpdatedAtLTE != nil {
-		predicates = append(predicates, example.UpdatedAtLTE(*i.UpdatedAtLTE))
+		predicates = append(predicates, todo.UpdatedAtLTE(*i.UpdatedAtLTE))
 	}
 	if i.Name != nil {
-		predicates = append(predicates, example.NameEQ(*i.Name))
+		predicates = append(predicates, todo.NameEQ(*i.Name))
 	}
 	if i.NameNEQ != nil {
-		predicates = append(predicates, example.NameNEQ(*i.NameNEQ))
+		predicates = append(predicates, todo.NameNEQ(*i.NameNEQ))
 	}
 	if len(i.NameIn) > 0 {
-		predicates = append(predicates, example.NameIn(i.NameIn...))
+		predicates = append(predicates, todo.NameIn(i.NameIn...))
 	}
 	if len(i.NameNotIn) > 0 {
-		predicates = append(predicates, example.NameNotIn(i.NameNotIn...))
+		predicates = append(predicates, todo.NameNotIn(i.NameNotIn...))
 	}
 	if i.NameGT != nil {
-		predicates = append(predicates, example.NameGT(*i.NameGT))
+		predicates = append(predicates, todo.NameGT(*i.NameGT))
 	}
 	if i.NameGTE != nil {
-		predicates = append(predicates, example.NameGTE(*i.NameGTE))
+		predicates = append(predicates, todo.NameGTE(*i.NameGTE))
 	}
 	if i.NameLT != nil {
-		predicates = append(predicates, example.NameLT(*i.NameLT))
+		predicates = append(predicates, todo.NameLT(*i.NameLT))
 	}
 	if i.NameLTE != nil {
-		predicates = append(predicates, example.NameLTE(*i.NameLTE))
+		predicates = append(predicates, todo.NameLTE(*i.NameLTE))
 	}
 	if i.NameContains != nil {
-		predicates = append(predicates, example.NameContains(*i.NameContains))
+		predicates = append(predicates, todo.NameContains(*i.NameContains))
 	}
 	if i.NameHasPrefix != nil {
-		predicates = append(predicates, example.NameHasPrefix(*i.NameHasPrefix))
+		predicates = append(predicates, todo.NameHasPrefix(*i.NameHasPrefix))
 	}
 	if i.NameHasSuffix != nil {
-		predicates = append(predicates, example.NameHasSuffix(*i.NameHasSuffix))
+		predicates = append(predicates, todo.NameHasSuffix(*i.NameHasSuffix))
 	}
 	if i.NameEqualFold != nil {
-		predicates = append(predicates, example.NameEqualFold(*i.NameEqualFold))
+		predicates = append(predicates, todo.NameEqualFold(*i.NameEqualFold))
 	}
 	if i.NameContainsFold != nil {
-		predicates = append(predicates, example.NameContainsFold(*i.NameContainsFold))
+		predicates = append(predicates, todo.NameContainsFold(*i.NameContainsFold))
 	}
 	if i.Description != nil {
-		predicates = append(predicates, example.DescriptionEQ(*i.Description))
+		predicates = append(predicates, todo.DescriptionEQ(*i.Description))
 	}
 	if i.DescriptionNEQ != nil {
-		predicates = append(predicates, example.DescriptionNEQ(*i.DescriptionNEQ))
+		predicates = append(predicates, todo.DescriptionNEQ(*i.DescriptionNEQ))
 	}
 	if len(i.DescriptionIn) > 0 {
-		predicates = append(predicates, example.DescriptionIn(i.DescriptionIn...))
+		predicates = append(predicates, todo.DescriptionIn(i.DescriptionIn...))
 	}
 	if len(i.DescriptionNotIn) > 0 {
-		predicates = append(predicates, example.DescriptionNotIn(i.DescriptionNotIn...))
+		predicates = append(predicates, todo.DescriptionNotIn(i.DescriptionNotIn...))
 	}
 	if i.DescriptionGT != nil {
-		predicates = append(predicates, example.DescriptionGT(*i.DescriptionGT))
+		predicates = append(predicates, todo.DescriptionGT(*i.DescriptionGT))
 	}
 	if i.DescriptionGTE != nil {
-		predicates = append(predicates, example.DescriptionGTE(*i.DescriptionGTE))
+		predicates = append(predicates, todo.DescriptionGTE(*i.DescriptionGTE))
 	}
 	if i.DescriptionLT != nil {
-		predicates = append(predicates, example.DescriptionLT(*i.DescriptionLT))
+		predicates = append(predicates, todo.DescriptionLT(*i.DescriptionLT))
 	}
 	if i.DescriptionLTE != nil {
-		predicates = append(predicates, example.DescriptionLTE(*i.DescriptionLTE))
+		predicates = append(predicates, todo.DescriptionLTE(*i.DescriptionLTE))
 	}
 	if i.DescriptionContains != nil {
-		predicates = append(predicates, example.DescriptionContains(*i.DescriptionContains))
+		predicates = append(predicates, todo.DescriptionContains(*i.DescriptionContains))
 	}
 	if i.DescriptionHasPrefix != nil {
-		predicates = append(predicates, example.DescriptionHasPrefix(*i.DescriptionHasPrefix))
+		predicates = append(predicates, todo.DescriptionHasPrefix(*i.DescriptionHasPrefix))
 	}
 	if i.DescriptionHasSuffix != nil {
-		predicates = append(predicates, example.DescriptionHasSuffix(*i.DescriptionHasSuffix))
+		predicates = append(predicates, todo.DescriptionHasSuffix(*i.DescriptionHasSuffix))
+	}
+	if i.DescriptionIsNil {
+		predicates = append(predicates, todo.DescriptionIsNil())
+	}
+	if i.DescriptionNotNil {
+		predicates = append(predicates, todo.DescriptionNotNil())
 	}
 	if i.DescriptionEqualFold != nil {
-		predicates = append(predicates, example.DescriptionEqualFold(*i.DescriptionEqualFold))
+		predicates = append(predicates, todo.DescriptionEqualFold(*i.DescriptionEqualFold))
 	}
 	if i.DescriptionContainsFold != nil {
-		predicates = append(predicates, example.DescriptionContainsFold(*i.DescriptionContainsFold))
+		predicates = append(predicates, todo.DescriptionContainsFold(*i.DescriptionContainsFold))
 	}
 
 	switch len(predicates) {
 	case 0:
-		return nil, ErrEmptyExampleWhereInput
+		return nil, ErrEmptyTodoWhereInput
 	case 1:
 		return predicates[0], nil
 	default:
-		return example.And(predicates...), nil
+		return todo.And(predicates...), nil
 	}
 }

@@ -53,40 +53,18 @@ vendor: ## Vendors dependencies
 	@go mod tidy
 	@go mod download
 
-testclient:| background-run .testclient kill-running ## Regenerates the test client in graphclient
-
-.testclient:
-	@echo --- Generating test graph client...
-	@date --rfc-3339=seconds
-	@go generate ./internal/graphclient
 
 dev-nats: ## Initializes nats
 	@echo --- Initializing nats
 	@date --rfc-3339=seconds
 	@.devcontainer/scripts/nats_account.sh
 
-generate: background-run .generate kill-running ## Generates code
-
-.generate:
+generate: ## Generates code
 	@echo --- Generating code...
 	@date --rfc-3339=seconds
-	@go generate ./...
+	@go generate .
 
 go-run: ## Runs the app
 	@echo --- Running binary...
 	@date --rfc-3339=seconds
 	@go run main.go serve --dev
-
-background-run:  ## Runs in the app in the background
-	@date --rfc-3339=seconds
-	@if [ ! -f "${PID_FILE}" ]; then \
-		echo --- Running binary in the background...; \
-		go run main.go serve --pid-file=${PID_FILE} --dev & \
-	else \
-		echo --- Binary already running in the background...; \
-	fi
-
-kill-running: ## Kills the running binary from pid file
-	@echo --- Killing background binary...
-	@date --rfc-3339=seconds
-	@kill $$(cat ${PID_FILE})

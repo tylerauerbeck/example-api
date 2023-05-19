@@ -12,5 +12,5 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package graphapi provides the graph api handler and resolver for example api
-package graphapi
+// Package testcontainersx provides a wrapper around creating testcontainers that are used throughout the ecosystem
+package testcontainersx

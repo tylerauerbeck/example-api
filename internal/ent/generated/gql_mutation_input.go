@@ -20,50 +20,56 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// CreateExampleInput represents a mutation input for creating examples.
-type CreateExampleInput struct {
+// CreateTodoInput represents a mutation input for creating todos.
+type CreateTodoInput struct {
 	Name        string
-	Description string
+	Description *string
 	TenantID    gidx.PrefixedID
 }
 
-// Mutate applies the CreateExampleInput on the ExampleMutation builder.
-func (i *CreateExampleInput) Mutate(m *ExampleMutation) {
+// Mutate applies the CreateTodoInput on the TodoMutation builder.
+func (i *CreateTodoInput) Mutate(m *TodoMutation) {
 	m.SetName(i.Name)
-	m.SetDescription(i.Description)
+	if v := i.Description; v != nil {
+		m.SetDescription(*v)
+	}
 	m.SetTenantID(i.TenantID)
 }
 
-// SetInput applies the change-set in the CreateExampleInput on the ExampleCreate builder.
-func (c *ExampleCreate) SetInput(i CreateExampleInput) *ExampleCreate {
+// SetInput applies the change-set in the CreateTodoInput on the TodoCreate builder.
+func (c *TodoCreate) SetInput(i CreateTodoInput) *TodoCreate {
 	i.Mutate(c.Mutation())
 	return c
 }
 
-// UpdateExampleInput represents a mutation input for updating examples.
-type UpdateExampleInput struct {
-	Name        *string
-	Description *string
+// UpdateTodoInput represents a mutation input for updating todos.
+type UpdateTodoInput struct {
+	Name             *string
+	ClearDescription bool
+	Description      *string
 }
 
-// Mutate applies the UpdateExampleInput on the ExampleMutation builder.
-func (i *UpdateExampleInput) Mutate(m *ExampleMutation) {
+// Mutate applies the UpdateTodoInput on the TodoMutation builder.
+func (i *UpdateTodoInput) Mutate(m *TodoMutation) {
 	if v := i.Name; v != nil {
 		m.SetName(*v)
+	}
+	if i.ClearDescription {
+		m.ClearDescription()
 	}
 	if v := i.Description; v != nil {
 		m.SetDescription(*v)
 	}
 }
 
-// SetInput applies the change-set in the UpdateExampleInput on the ExampleUpdate builder.
-func (c *ExampleUpdate) SetInput(i UpdateExampleInput) *ExampleUpdate {
+// SetInput applies the change-set in the UpdateTodoInput on the TodoUpdate builder.
+func (c *TodoUpdate) SetInput(i UpdateTodoInput) *TodoUpdate {
 	i.Mutate(c.Mutation())
 	return c
 }
 
-// SetInput applies the change-set in the UpdateExampleInput on the ExampleUpdateOne builder.
-func (c *ExampleUpdateOne) SetInput(i UpdateExampleInput) *ExampleUpdateOne {
+// SetInput applies the change-set in the UpdateTodoInput on the TodoUpdateOne builder.
+func (c *TodoUpdateOne) SetInput(i UpdateTodoInput) *TodoUpdateOne {
 	i.Mutate(c.Mutation())
 	return c
 }

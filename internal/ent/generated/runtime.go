@@ -19,7 +19,7 @@ package generated
 import (
 	"time"
 
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 	"go.infratographer.com/example-api/internal/ent/schema"
 	"go.infratographer.com/x/gidx"
 )
@@ -28,31 +28,27 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	exampleMixin := schema.Example{}.Mixin()
-	exampleMixinFields0 := exampleMixin[0].Fields()
-	_ = exampleMixinFields0
-	exampleFields := schema.Example{}.Fields()
-	_ = exampleFields
-	// exampleDescCreatedAt is the schema descriptor for created_at field.
-	exampleDescCreatedAt := exampleMixinFields0[0].Descriptor()
-	// example.DefaultCreatedAt holds the default value on creation for the created_at field.
-	example.DefaultCreatedAt = exampleDescCreatedAt.Default.(func() time.Time)
-	// exampleDescUpdatedAt is the schema descriptor for updated_at field.
-	exampleDescUpdatedAt := exampleMixinFields0[1].Descriptor()
-	// example.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	example.DefaultUpdatedAt = exampleDescUpdatedAt.Default.(func() time.Time)
-	// example.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	example.UpdateDefaultUpdatedAt = exampleDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// exampleDescName is the schema descriptor for name field.
-	exampleDescName := exampleFields[1].Descriptor()
-	// example.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	example.NameValidator = exampleDescName.Validators[0].(func(string) error)
-	// exampleDescDescription is the schema descriptor for description field.
-	exampleDescDescription := exampleFields[2].Descriptor()
-	// example.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
-	example.DescriptionValidator = exampleDescDescription.Validators[0].(func(string) error)
-	// exampleDescID is the schema descriptor for id field.
-	exampleDescID := exampleFields[0].Descriptor()
-	// example.DefaultID holds the default value on creation for the id field.
-	example.DefaultID = exampleDescID.Default.(func() gidx.PrefixedID)
+	todoMixin := schema.Todo{}.Mixin()
+	todoMixinFields0 := todoMixin[0].Fields()
+	_ = todoMixinFields0
+	todoFields := schema.Todo{}.Fields()
+	_ = todoFields
+	// todoDescCreatedAt is the schema descriptor for created_at field.
+	todoDescCreatedAt := todoMixinFields0[0].Descriptor()
+	// todo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	todo.DefaultCreatedAt = todoDescCreatedAt.Default.(func() time.Time)
+	// todoDescUpdatedAt is the schema descriptor for updated_at field.
+	todoDescUpdatedAt := todoMixinFields0[1].Descriptor()
+	// todo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	todo.DefaultUpdatedAt = todoDescUpdatedAt.Default.(func() time.Time)
+	// todo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	todo.UpdateDefaultUpdatedAt = todoDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// todoDescName is the schema descriptor for name field.
+	todoDescName := todoFields[1].Descriptor()
+	// todo.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	todo.NameValidator = todoDescName.Validators[0].(func(string) error)
+	// todoDescID is the schema descriptor for id field.
+	todoDescID := todoFields[0].Descriptor()
+	// todo.DefaultID holds the default value on creation for the id field.
+	todo.DefaultID = todoDescID.Default.(func() gidx.PrefixedID)
 }

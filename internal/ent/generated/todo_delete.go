@@ -22,81 +22,81 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
 	"go.infratographer.com/example-api/internal/ent/generated/predicate"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 )
 
-// ExampleDelete is the builder for deleting a Example entity.
-type ExampleDelete struct {
+// TodoDelete is the builder for deleting a Todo entity.
+type TodoDelete struct {
 	config
 	hooks    []Hook
-	mutation *ExampleMutation
+	mutation *TodoMutation
 }
 
-// Where appends a list predicates to the ExampleDelete builder.
-func (ed *ExampleDelete) Where(ps ...predicate.Example) *ExampleDelete {
-	ed.mutation.Where(ps...)
-	return ed
+// Where appends a list predicates to the TodoDelete builder.
+func (td *TodoDelete) Where(ps ...predicate.Todo) *TodoDelete {
+	td.mutation.Where(ps...)
+	return td
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (ed *ExampleDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks(ctx, ed.sqlExec, ed.mutation, ed.hooks)
+func (td *TodoDelete) Exec(ctx context.Context) (int, error) {
+	return withHooks(ctx, td.sqlExec, td.mutation, td.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (ed *ExampleDelete) ExecX(ctx context.Context) int {
-	n, err := ed.Exec(ctx)
+func (td *TodoDelete) ExecX(ctx context.Context) int {
+	n, err := td.Exec(ctx)
 	if err != nil {
 		panic(err)
 	}
 	return n
 }
 
-func (ed *ExampleDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(example.Table, sqlgraph.NewFieldSpec(example.FieldID, field.TypeString))
-	if ps := ed.mutation.predicates; len(ps) > 0 {
+func (td *TodoDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(todo.Table, sqlgraph.NewFieldSpec(todo.FieldID, field.TypeString))
+	if ps := td.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	affected, err := sqlgraph.DeleteNodes(ctx, ed.driver, _spec)
+	affected, err := sqlgraph.DeleteNodes(ctx, td.driver, _spec)
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
-	ed.mutation.done = true
+	td.mutation.done = true
 	return affected, err
 }
 
-// ExampleDeleteOne is the builder for deleting a single Example entity.
-type ExampleDeleteOne struct {
-	ed *ExampleDelete
+// TodoDeleteOne is the builder for deleting a single Todo entity.
+type TodoDeleteOne struct {
+	td *TodoDelete
 }
 
-// Where appends a list predicates to the ExampleDelete builder.
-func (edo *ExampleDeleteOne) Where(ps ...predicate.Example) *ExampleDeleteOne {
-	edo.ed.mutation.Where(ps...)
-	return edo
+// Where appends a list predicates to the TodoDelete builder.
+func (tdo *TodoDeleteOne) Where(ps ...predicate.Todo) *TodoDeleteOne {
+	tdo.td.mutation.Where(ps...)
+	return tdo
 }
 
 // Exec executes the deletion query.
-func (edo *ExampleDeleteOne) Exec(ctx context.Context) error {
-	n, err := edo.ed.Exec(ctx)
+func (tdo *TodoDeleteOne) Exec(ctx context.Context) error {
+	n, err := tdo.td.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{example.Label}
+		return &NotFoundError{todo.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (edo *ExampleDeleteOne) ExecX(ctx context.Context) {
-	if err := edo.Exec(ctx); err != nil {
+func (tdo *TodoDeleteOne) ExecX(ctx context.Context) {
+	if err := tdo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

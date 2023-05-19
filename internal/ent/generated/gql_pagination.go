@@ -29,7 +29,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/vektah/gqlparser/v2/gqlerror"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 	"go.infratographer.com/x/gidx"
 )
 
@@ -113,20 +113,20 @@ func paginateLimit(first, last *int) int {
 	return limit
 }
 
-// ExampleEdge is the edge representation of Example.
-type ExampleEdge struct {
-	Node   *Example `json:"node"`
-	Cursor Cursor   `json:"cursor"`
+// TodoEdge is the edge representation of Todo.
+type TodoEdge struct {
+	Node   *Todo  `json:"node"`
+	Cursor Cursor `json:"cursor"`
 }
 
-// ExampleConnection is the connection containing edges to Example.
-type ExampleConnection struct {
-	Edges      []*ExampleEdge `json:"edges"`
-	PageInfo   PageInfo       `json:"pageInfo"`
-	TotalCount int            `json:"totalCount"`
+// TodoConnection is the connection containing edges to Todo.
+type TodoConnection struct {
+	Edges      []*TodoEdge `json:"edges"`
+	PageInfo   PageInfo    `json:"pageInfo"`
+	TotalCount int         `json:"totalCount"`
 }
 
-func (c *ExampleConnection) build(nodes []*Example, pager *examplePager, after *Cursor, first *int, before *Cursor, last *int) {
+func (c *TodoConnection) build(nodes []*Todo, pager *todoPager, after *Cursor, first *int, before *Cursor, last *int) {
 	c.PageInfo.HasNextPage = before != nil
 	c.PageInfo.HasPreviousPage = after != nil
 	if first != nil && *first+1 == len(nodes) {
@@ -136,21 +136,21 @@ func (c *ExampleConnection) build(nodes []*Example, pager *examplePager, after *
 		c.PageInfo.HasPreviousPage = true
 		nodes = nodes[:len(nodes)-1]
 	}
-	var nodeAt func(int) *Example
+	var nodeAt func(int) *Todo
 	if last != nil {
 		n := len(nodes) - 1
-		nodeAt = func(i int) *Example {
+		nodeAt = func(i int) *Todo {
 			return nodes[n-i]
 		}
 	} else {
-		nodeAt = func(i int) *Example {
+		nodeAt = func(i int) *Todo {
 			return nodes[i]
 		}
 	}
-	c.Edges = make([]*ExampleEdge, len(nodes))
+	c.Edges = make([]*TodoEdge, len(nodes))
 	for i := range nodes {
 		node := nodeAt(i)
-		c.Edges[i] = &ExampleEdge{
+		c.Edges[i] = &TodoEdge{
 			Node:   node,
 			Cursor: pager.toCursor(node),
 		}
@@ -164,87 +164,87 @@ func (c *ExampleConnection) build(nodes []*Example, pager *examplePager, after *
 	}
 }
 
-// ExamplePaginateOption enables pagination customization.
-type ExamplePaginateOption func(*examplePager) error
+// TodoPaginateOption enables pagination customization.
+type TodoPaginateOption func(*todoPager) error
 
-// WithExampleOrder configures pagination ordering.
-func WithExampleOrder(order *ExampleOrder) ExamplePaginateOption {
+// WithTodoOrder configures pagination ordering.
+func WithTodoOrder(order *TodoOrder) TodoPaginateOption {
 	if order == nil {
-		order = DefaultExampleOrder
+		order = DefaultTodoOrder
 	}
 	o := *order
-	return func(pager *examplePager) error {
+	return func(pager *todoPager) error {
 		if err := o.Direction.Validate(); err != nil {
 			return err
 		}
 		if o.Field == nil {
-			o.Field = DefaultExampleOrder.Field
+			o.Field = DefaultTodoOrder.Field
 		}
 		pager.order = &o
 		return nil
 	}
 }
 
-// WithExampleFilter configures pagination filter.
-func WithExampleFilter(filter func(*ExampleQuery) (*ExampleQuery, error)) ExamplePaginateOption {
-	return func(pager *examplePager) error {
+// WithTodoFilter configures pagination filter.
+func WithTodoFilter(filter func(*TodoQuery) (*TodoQuery, error)) TodoPaginateOption {
+	return func(pager *todoPager) error {
 		if filter == nil {
-			return errors.New("ExampleQuery filter cannot be nil")
+			return errors.New("TodoQuery filter cannot be nil")
 		}
 		pager.filter = filter
 		return nil
 	}
 }
 
-type examplePager struct {
+type todoPager struct {
 	reverse bool
-	order   *ExampleOrder
-	filter  func(*ExampleQuery) (*ExampleQuery, error)
+	order   *TodoOrder
+	filter  func(*TodoQuery) (*TodoQuery, error)
 }
 
-func newExamplePager(opts []ExamplePaginateOption, reverse bool) (*examplePager, error) {
-	pager := &examplePager{reverse: reverse}
+func newTodoPager(opts []TodoPaginateOption, reverse bool) (*todoPager, error) {
+	pager := &todoPager{reverse: reverse}
 	for _, opt := range opts {
 		if err := opt(pager); err != nil {
 			return nil, err
 		}
 	}
 	if pager.order == nil {
-		pager.order = DefaultExampleOrder
+		pager.order = DefaultTodoOrder
 	}
 	return pager, nil
 }
 
-func (p *examplePager) applyFilter(query *ExampleQuery) (*ExampleQuery, error) {
+func (p *todoPager) applyFilter(query *TodoQuery) (*TodoQuery, error) {
 	if p.filter != nil {
 		return p.filter(query)
 	}
 	return query, nil
 }
 
-func (p *examplePager) toCursor(e *Example) Cursor {
-	return p.order.Field.toCursor(e)
+func (p *todoPager) toCursor(t *Todo) Cursor {
+	return p.order.Field.toCursor(t)
 }
 
-func (p *examplePager) applyCursors(query *ExampleQuery, after, before *Cursor) (*ExampleQuery, error) {
+func (p *todoPager) applyCursors(query *TodoQuery, after, before *Cursor) (*TodoQuery, error) {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
-	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultExampleOrder.Field.column, p.order.Field.column, direction) {
+	for _, predicate := range entgql.CursorsPredicate(after, before, DefaultTodoOrder.Field.column, p.order.Field.column, direction) {
 		query = query.Where(predicate)
 	}
 	return query, nil
 }
 
-func (p *examplePager) applyOrder(query *ExampleQuery) *ExampleQuery {
+func (p *todoPager) applyOrder(query *TodoQuery) *TodoQuery {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
 	}
 	query = query.Order(p.order.Field.toTerm(direction.OrderTermOption()))
-	if p.order.Field != DefaultExampleOrder.Field {
-		query = query.Order(DefaultExampleOrder.Field.toTerm(direction.OrderTermOption()))
+	if p.order.Field != DefaultTodoOrder.Field {
+		query = query.Order(DefaultTodoOrder.Field.toTerm(direction.OrderTermOption()))
 	}
 	if len(query.ctx.Fields) > 0 {
 		query.ctx.AppendFieldOnce(p.order.Field.column)
@@ -252,7 +252,7 @@ func (p *examplePager) applyOrder(query *ExampleQuery) *ExampleQuery {
 	return query
 }
 
-func (p *examplePager) orderExpr(query *ExampleQuery) sql.Querier {
+func (p *todoPager) orderExpr(query *TodoQuery) sql.Querier {
 	direction := p.order.Direction
 	if p.reverse {
 		direction = direction.Reverse()
@@ -262,33 +262,33 @@ func (p *examplePager) orderExpr(query *ExampleQuery) sql.Querier {
 	}
 	return sql.ExprFunc(func(b *sql.Builder) {
 		b.Ident(p.order.Field.column).Pad().WriteString(string(direction))
-		if p.order.Field != DefaultExampleOrder.Field {
-			b.Comma().Ident(DefaultExampleOrder.Field.column).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultTodoOrder.Field {
+			b.Comma().Ident(DefaultTodoOrder.Field.column).Pad().WriteString(string(direction))
 		}
 	})
 }
 
-// Paginate executes the query and returns a relay based cursor connection to Example.
-func (e *ExampleQuery) Paginate(
+// Paginate executes the query and returns a relay based cursor connection to Todo.
+func (t *TodoQuery) Paginate(
 	ctx context.Context, after *Cursor, first *int,
-	before *Cursor, last *int, opts ...ExamplePaginateOption,
-) (*ExampleConnection, error) {
+	before *Cursor, last *int, opts ...TodoPaginateOption,
+) (*TodoConnection, error) {
 	if err := validateFirstLast(first, last); err != nil {
 		return nil, err
 	}
-	pager, err := newExamplePager(opts, last != nil)
+	pager, err := newTodoPager(opts, last != nil)
 	if err != nil {
 		return nil, err
 	}
-	if e, err = pager.applyFilter(e); err != nil {
+	if t, err = pager.applyFilter(t); err != nil {
 		return nil, err
 	}
-	conn := &ExampleConnection{Edges: []*ExampleEdge{}}
+	conn := &TodoConnection{Edges: []*TodoEdge{}}
 	ignoredEdges := !hasCollectedField(ctx, edgesField)
 	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
 		hasPagination := after != nil || first != nil || before != nil || last != nil
 		if hasPagination || ignoredEdges {
-			if conn.TotalCount, err = e.Clone().Count(ctx); err != nil {
+			if conn.TotalCount, err = t.Clone().Count(ctx); err != nil {
 				return nil, err
 			}
 			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
@@ -298,19 +298,19 @@ func (e *ExampleQuery) Paginate(
 	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
 		return conn, nil
 	}
-	if e, err = pager.applyCursors(e, after, before); err != nil {
+	if t, err = pager.applyCursors(t, after, before); err != nil {
 		return nil, err
 	}
 	if limit := paginateLimit(first, last); limit != 0 {
-		e.Limit(limit)
+		t.Limit(limit)
 	}
 	if field := collectedField(ctx, edgesField, nodeField); field != nil {
-		if err := e.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+		if err := t.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
 			return nil, err
 		}
 	}
-	e = pager.applyOrder(e)
-	nodes, err := e.All(ctx)
+	t = pager.applyOrder(t)
+	nodes, err := t.All(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -319,179 +319,179 @@ func (e *ExampleQuery) Paginate(
 }
 
 var (
-	// ExampleOrderFieldID orders Example by id.
-	ExampleOrderFieldID = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.ID, nil
+	// TodoOrderFieldID orders Todo by id.
+	TodoOrderFieldID = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.ID, nil
 		},
-		column: example.FieldID,
-		toTerm: example.ByID,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldID,
+		toTerm: todo.ByID,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.ID,
+				ID:    t.ID,
+				Value: t.ID,
 			}
 		},
 	}
-	// ExampleOrderFieldCreatedAt orders Example by created_at.
-	ExampleOrderFieldCreatedAt = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.CreatedAt, nil
+	// TodoOrderFieldCreatedAt orders Todo by created_at.
+	TodoOrderFieldCreatedAt = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.CreatedAt, nil
 		},
-		column: example.FieldCreatedAt,
-		toTerm: example.ByCreatedAt,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldCreatedAt,
+		toTerm: todo.ByCreatedAt,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.CreatedAt,
+				ID:    t.ID,
+				Value: t.CreatedAt,
 			}
 		},
 	}
-	// ExampleOrderFieldUpdatedAt orders Example by updated_at.
-	ExampleOrderFieldUpdatedAt = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.UpdatedAt, nil
+	// TodoOrderFieldUpdatedAt orders Todo by updated_at.
+	TodoOrderFieldUpdatedAt = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.UpdatedAt, nil
 		},
-		column: example.FieldUpdatedAt,
-		toTerm: example.ByUpdatedAt,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldUpdatedAt,
+		toTerm: todo.ByUpdatedAt,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.UpdatedAt,
+				ID:    t.ID,
+				Value: t.UpdatedAt,
 			}
 		},
 	}
-	// ExampleOrderFieldName orders Example by name.
-	ExampleOrderFieldName = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.Name, nil
+	// TodoOrderFieldName orders Todo by name.
+	TodoOrderFieldName = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.Name, nil
 		},
-		column: example.FieldName,
-		toTerm: example.ByName,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldName,
+		toTerm: todo.ByName,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.Name,
+				ID:    t.ID,
+				Value: t.Name,
 			}
 		},
 	}
-	// ExampleOrderFieldDescription orders Example by description.
-	ExampleOrderFieldDescription = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.Description, nil
+	// TodoOrderFieldDescription orders Todo by description.
+	TodoOrderFieldDescription = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.Description, nil
 		},
-		column: example.FieldDescription,
-		toTerm: example.ByDescription,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldDescription,
+		toTerm: todo.ByDescription,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.Description,
+				ID:    t.ID,
+				Value: t.Description,
 			}
 		},
 	}
-	// ExampleOrderFieldTenantID orders Example by tenant_id.
-	ExampleOrderFieldTenantID = &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.TenantID, nil
+	// TodoOrderFieldTenantID orders Todo by tenant_id.
+	TodoOrderFieldTenantID = &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.TenantID, nil
 		},
-		column: example.FieldTenantID,
-		toTerm: example.ByTenantID,
-		toCursor: func(e *Example) Cursor {
+		column: todo.FieldTenantID,
+		toTerm: todo.ByTenantID,
+		toCursor: func(t *Todo) Cursor {
 			return Cursor{
-				ID:    e.ID,
-				Value: e.TenantID,
+				ID:    t.ID,
+				Value: t.TenantID,
 			}
 		},
 	}
 )
 
 // String implement fmt.Stringer interface.
-func (f ExampleOrderField) String() string {
+func (f TodoOrderField) String() string {
 	var str string
 	switch f.column {
-	case ExampleOrderFieldID.column:
+	case TodoOrderFieldID.column:
 		str = "ID"
-	case ExampleOrderFieldCreatedAt.column:
+	case TodoOrderFieldCreatedAt.column:
 		str = "CREATED_AT"
-	case ExampleOrderFieldUpdatedAt.column:
+	case TodoOrderFieldUpdatedAt.column:
 		str = "UPDATED_AT"
-	case ExampleOrderFieldName.column:
+	case TodoOrderFieldName.column:
 		str = "NAME"
-	case ExampleOrderFieldDescription.column:
+	case TodoOrderFieldDescription.column:
 		str = "DESCRIPTION"
-	case ExampleOrderFieldTenantID.column:
+	case TodoOrderFieldTenantID.column:
 		str = "TENANT"
 	}
 	return str
 }
 
 // MarshalGQL implements graphql.Marshaler interface.
-func (f ExampleOrderField) MarshalGQL(w io.Writer) {
+func (f TodoOrderField) MarshalGQL(w io.Writer) {
 	io.WriteString(w, strconv.Quote(f.String()))
 }
 
 // UnmarshalGQL implements graphql.Unmarshaler interface.
-func (f *ExampleOrderField) UnmarshalGQL(v interface{}) error {
+func (f *TodoOrderField) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
-		return fmt.Errorf("ExampleOrderField %T must be a string", v)
+		return fmt.Errorf("TodoOrderField %T must be a string", v)
 	}
 	switch str {
 	case "ID":
-		*f = *ExampleOrderFieldID
+		*f = *TodoOrderFieldID
 	case "CREATED_AT":
-		*f = *ExampleOrderFieldCreatedAt
+		*f = *TodoOrderFieldCreatedAt
 	case "UPDATED_AT":
-		*f = *ExampleOrderFieldUpdatedAt
+		*f = *TodoOrderFieldUpdatedAt
 	case "NAME":
-		*f = *ExampleOrderFieldName
+		*f = *TodoOrderFieldName
 	case "DESCRIPTION":
-		*f = *ExampleOrderFieldDescription
+		*f = *TodoOrderFieldDescription
 	case "TENANT":
-		*f = *ExampleOrderFieldTenantID
+		*f = *TodoOrderFieldTenantID
 	default:
-		return fmt.Errorf("%s is not a valid ExampleOrderField", str)
+		return fmt.Errorf("%s is not a valid TodoOrderField", str)
 	}
 	return nil
 }
 
-// ExampleOrderField defines the ordering field of Example.
-type ExampleOrderField struct {
-	// Value extracts the ordering value from the given Example.
-	Value    func(*Example) (ent.Value, error)
+// TodoOrderField defines the ordering field of Todo.
+type TodoOrderField struct {
+	// Value extracts the ordering value from the given Todo.
+	Value    func(*Todo) (ent.Value, error)
 	column   string // field or computed.
-	toTerm   func(...sql.OrderTermOption) example.OrderOption
-	toCursor func(*Example) Cursor
+	toTerm   func(...sql.OrderTermOption) todo.OrderOption
+	toCursor func(*Todo) Cursor
 }
 
-// ExampleOrder defines the ordering of Example.
-type ExampleOrder struct {
-	Direction OrderDirection     `json:"direction"`
-	Field     *ExampleOrderField `json:"field"`
+// TodoOrder defines the ordering of Todo.
+type TodoOrder struct {
+	Direction OrderDirection  `json:"direction"`
+	Field     *TodoOrderField `json:"field"`
 }
 
-// DefaultExampleOrder is the default ordering of Example.
-var DefaultExampleOrder = &ExampleOrder{
+// DefaultTodoOrder is the default ordering of Todo.
+var DefaultTodoOrder = &TodoOrder{
 	Direction: entgql.OrderDirectionAsc,
-	Field: &ExampleOrderField{
-		Value: func(e *Example) (ent.Value, error) {
-			return e.ID, nil
+	Field: &TodoOrderField{
+		Value: func(t *Todo) (ent.Value, error) {
+			return t.ID, nil
 		},
-		column: example.FieldID,
-		toTerm: example.ByID,
-		toCursor: func(e *Example) Cursor {
-			return Cursor{ID: e.ID}
+		column: todo.FieldID,
+		toTerm: todo.ByID,
+		toCursor: func(t *Todo) Cursor {
+			return Cursor{ID: t.ID}
 		},
 	},
 }
 
-// ToEdge converts Example into ExampleEdge.
-func (e *Example) ToEdge(order *ExampleOrder) *ExampleEdge {
+// ToEdge converts Todo into TodoEdge.
+func (t *Todo) ToEdge(order *TodoOrder) *TodoEdge {
 	if order == nil {
-		order = DefaultExampleOrder
+		order = DefaultTodoOrder
 	}
-	return &ExampleEdge{
-		Node:   e,
-		Cursor: order.Field.toCursor(e),
+	return &TodoEdge{
+		Node:   t,
+		Cursor: order.Field.toCursor(t),
 	}
 }

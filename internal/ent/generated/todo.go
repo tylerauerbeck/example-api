@@ -23,39 +23,39 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"go.infratographer.com/example-api/internal/ent/generated/example"
+	"go.infratographer.com/example-api/internal/ent/generated/todo"
 	"go.infratographer.com/x/gidx"
 )
 
-// Represents an example node on the graph.
-type Example struct {
+// Represents an todo todo on the graph.
+type Todo struct {
 	config `json:"-"`
 	// ID of the ent.
-	// The ID of the Example.
+	// The ID of the Todo.
 	ID gidx.PrefixedID `json:"id,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-	// The name of the example.
+	// The name of the todo.
 	Name string `json:"name,omitempty"`
-	// The name of the example.
+	// The description of the todo.
 	Description string `json:"description,omitempty"`
-	// The ID for the tenant for this example.
+	// The ID for the tenant for this todo.
 	TenantID     gidx.PrefixedID `json:"tenant_id,omitempty"`
 	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Example) scanValues(columns []string) ([]any, error) {
+func (*Todo) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case example.FieldID, example.FieldTenantID:
+		case todo.FieldID, todo.FieldTenantID:
 			values[i] = new(gidx.PrefixedID)
-		case example.FieldName, example.FieldDescription:
+		case todo.FieldName, todo.FieldDescription:
 			values[i] = new(sql.NullString)
-		case example.FieldCreatedAt, example.FieldUpdatedAt:
+		case todo.FieldCreatedAt, todo.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -65,105 +65,105 @@ func (*Example) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Example fields.
-func (e *Example) assignValues(columns []string, values []any) error {
+// to the Todo fields.
+func (t *Todo) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case example.FieldID:
+		case todo.FieldID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				e.ID = *value
+				t.ID = *value
 			}
-		case example.FieldCreatedAt:
+		case todo.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				e.CreatedAt = value.Time
+				t.CreatedAt = value.Time
 			}
-		case example.FieldUpdatedAt:
+		case todo.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				e.UpdatedAt = value.Time
+				t.UpdatedAt = value.Time
 			}
-		case example.FieldName:
+		case todo.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				e.Name = value.String
+				t.Name = value.String
 			}
-		case example.FieldDescription:
+		case todo.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				e.Description = value.String
+				t.Description = value.String
 			}
-		case example.FieldTenantID:
+		case todo.FieldTenantID:
 			if value, ok := values[i].(*gidx.PrefixedID); !ok {
 				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
 			} else if value != nil {
-				e.TenantID = *value
+				t.TenantID = *value
 			}
 		default:
-			e.selectValues.Set(columns[i], values[i])
+			t.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Example.
+// Value returns the ent.Value that was dynamically selected and assigned to the Todo.
 // This includes values selected through modifiers, order, etc.
-func (e *Example) Value(name string) (ent.Value, error) {
-	return e.selectValues.Get(name)
+func (t *Todo) Value(name string) (ent.Value, error) {
+	return t.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Example.
-// Note that you need to call Example.Unwrap() before calling this method if this Example
+// Update returns a builder for updating this Todo.
+// Note that you need to call Todo.Unwrap() before calling this method if this Todo
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (e *Example) Update() *ExampleUpdateOne {
-	return NewExampleClient(e.config).UpdateOne(e)
+func (t *Todo) Update() *TodoUpdateOne {
+	return NewTodoClient(t.config).UpdateOne(t)
 }
 
-// Unwrap unwraps the Example entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Todo entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (e *Example) Unwrap() *Example {
-	_tx, ok := e.config.driver.(*txDriver)
+func (t *Todo) Unwrap() *Todo {
+	_tx, ok := t.config.driver.(*txDriver)
 	if !ok {
-		panic("generated: Example is not a transactional entity")
+		panic("generated: Todo is not a transactional entity")
 	}
-	e.config.driver = _tx.drv
-	return e
+	t.config.driver = _tx.drv
+	return t
 }
 
 // String implements the fmt.Stringer.
-func (e *Example) String() string {
+func (t *Todo) String() string {
 	var builder strings.Builder
-	builder.WriteString("Example(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", e.ID))
+	builder.WriteString("Todo(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", t.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(e.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(t.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(e.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(t.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(e.Name)
+	builder.WriteString(t.Name)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
-	builder.WriteString(e.Description)
+	builder.WriteString(t.Description)
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", e.TenantID))
+	builder.WriteString(fmt.Sprintf("%v", t.TenantID))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
 // IsEntity implement fedruntime.Entity
-func (e Example) IsEntity() {}
+func (t Todo) IsEntity() {}
 
-// Examples is a parsable slice of Example.
-type Examples []*Example
+// Todos is a parsable slice of Todo.
+type Todos []*Todo

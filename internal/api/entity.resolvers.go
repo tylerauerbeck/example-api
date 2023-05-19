@@ -1,4 +1,4 @@
-package graphapi
+package api
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -6,20 +6,19 @@ package graphapi
 
 import (
 	"context"
-	"fmt"
 
 	"go.infratographer.com/example-api/internal/ent/generated"
 	"go.infratographer.com/x/gidx"
 )
 
-// FindExampleByID is the resolver for the findExampleByID field.
-func (r *entityResolver) FindExampleByID(ctx context.Context, id gidx.PrefixedID) (*generated.Example, error) {
-	panic(fmt.Errorf("not implemented: FindExampleByID - findExampleByID"))
-}
-
 // FindTenantByID is the resolver for the findTenantByID field.
 func (r *entityResolver) FindTenantByID(ctx context.Context, id gidx.PrefixedID) (*Tenant, error) {
-	panic(fmt.Errorf("not implemented: FindTenantByID - findTenantByID"))
+	return &Tenant{ID: id}, nil
+}
+
+// FindTodoByID is the resolver for the findTodoByID field.
+func (r *entityResolver) FindTodoByID(ctx context.Context, id gidx.PrefixedID) (*generated.Todo, error) {
+	return r.client.Todo.Get(ctx, id)
 }
 
 // Entity returns EntityResolver implementation.
