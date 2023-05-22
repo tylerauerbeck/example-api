@@ -54,7 +54,7 @@ func init() {
 	rootCmd.PersistentFlags().String("nats-subject-prefix", "com.infratographer.events", "prefix for NATS subjects")
 	viperx.MustBindFlag(viper.GetViper(), "nats.subject-prefix", rootCmd.PersistentFlags().Lookup("nats-subject-prefix"))
 
-	rootCmd.PersistentFlags().String("nats-stream-name", "load-balancer-api", "nats stream name")
+	rootCmd.PersistentFlags().String("nats-stream-name", "example-api", "nats stream name")
 	viperx.MustBindFlag(viper.GetViper(), "nats.stream-name", rootCmd.PersistentFlags().Lookup("nats-stream-name"))
 
 	// Logging flags
