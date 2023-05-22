@@ -76,7 +76,7 @@ func (Todo) Indexes() []ent.Index {
 func (Todo) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entx.GraphKeyDirective("id"),
-		schema.Comment("Represents an todo todo on the graph."),
+		schema.Comment("Represents a todo todo on the graph."),
 		entgql.RelayConnection(),
 		entgql.Mutations(
 			entgql.MutationCreate().Description("Create a new todo todo."),

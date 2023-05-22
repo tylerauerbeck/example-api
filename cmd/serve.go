@@ -19,7 +19,7 @@ import (
 )
 
 const (
-	defaultLBAPIListenAddr = ":17608"
+	defaultListenAddr = ":17608"
 )
 
 var (
@@ -29,7 +29,7 @@ var (
 
 var serveCmd = &cobra.Command{
 	Use:   "serve",
-	Short: "Start the load balancer Graph API",
+	Short: "Start the todo example Graph API",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return serve(cmd.Context())
 	},
@@ -38,7 +38,7 @@ var serveCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
-	echox.MustViperFlags(viper.GetViper(), serveCmd.Flags(), defaultLBAPIListenAddr)
+	echox.MustViperFlags(viper.GetViper(), serveCmd.Flags(), defaultListenAddr)
 	echojwtx.MustViperFlags(viper.GetViper(), serveCmd.Flags())
 
 	// only available as a CLI arg because it shouldn't be something that could accidentially end up in a config file or env var

@@ -30,8 +30,7 @@ var (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   appName,
-	Short: "A utility for managing load balancers definitions",
-	Long:  `loadbalancer-api is a service for managing abstract lb relationships`,
+	Short: "An example graph api for todo items",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
