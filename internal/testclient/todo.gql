@@ -1,0 +1,60 @@
+query GetTodo($id: ID!) {
+    todo(id: $id) {
+        id
+        name
+        description
+        tenant{
+            id
+        }
+        createdAt
+        updatedAt
+    }
+}
+
+query ListTodos($id:ID!, $orderBy: TodoOrder){
+    _entities(representations: [{__typename: "Tenant", id: $id}]) {
+        ... on Tenant {
+            todo(orderBy: $orderBy) {
+                edges {
+                    node {
+                        id
+                        name
+                    }
+                }
+            }
+        }
+    }
+}
+
+mutation TodoCreate($input: CreateTodoInput!) {
+    todoCreate(input: $input) {
+        todo {
+            id
+            name
+            description
+            tenant{
+                id
+            }
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+mutation TodoUpdate($id: ID!,$input: UpdateTodoInput!) {
+    todoUpdate(id: $id input: $input) {
+        todo {
+            id
+            name
+            description
+            createdAt
+            updatedAt
+        }
+    }
+}
+
+mutation TodoDelete($id: ID!){
+    todoDelete(id: $id){
+        deletedID
+    }
+}

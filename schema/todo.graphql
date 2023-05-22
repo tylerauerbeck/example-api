@@ -1,0 +1,75 @@
+extend type Query {
+    """
+    Look up todo by ID
+    """
+    todo(
+        """
+        ID of the todo
+        """
+        id: ID!
+    ): Todo!
+}
+
+extend type Mutation{
+    """
+    Create a new todo
+    """
+    todoCreate(
+        """
+        Name of the todo
+        """
+        input: CreateTodoInput!
+    ): TodoCreatePayload!
+    """
+    Update an existing todo
+    """
+    todoUpdate(
+        """
+        ID of the todo
+        """
+        id: ID!
+        """
+        Name of the todo
+        """
+        input: UpdateTodoInput!
+    ): TodoUpdatePayload!
+    """
+    Delete an existing todo
+    """
+    todoDelete(
+        """
+        ID of the todo
+        """
+        id: ID!
+    ): TodoDeletePayload!
+}
+
+"""
+Return response for createTodo mutation
+"""
+type TodoCreatePayload {
+    """
+    Created todo
+    """
+    todo: Todo!
+}
+
+"""
+Return response for updateTodo mutation
+"""
+type TodoUpdatePayload {
+    """
+    Updated todo
+    """
+    todo: Todo!
+}
+
+"""
+Return response for deleteTodo mutation
+"""
+type TodoDeletePayload {
+    """
+    Deleted todo
+    """
+    deletedID: ID!
+}
