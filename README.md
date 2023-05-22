@@ -1,7 +1,7 @@
 ![logo](https://github.com/infratographer/website/blob/main/source/theme/assets/pictures/logo.jpg?raw=true)
 # Example API
 
-This repo is a little bit different than others found in the Infratpgarpher ecosystem. It''s meant to help understand through a simple example how to use [ent](https://entgo.io) and [gqlgen](https://gqlgen.com) to build a [GraphQL](https://graphql.org) API.
+This repo is a little bit different than others found in the Infratographer ecosystem. It's meant to help the reader understand, through a simple example, how to use [ent](https://entgo.io) and [gqlgen](https://gqlgen.com) to build a [GraphQL](https://graphql.org) API.
 
 There are two main components to this repo:
 
