@@ -80,7 +80,7 @@ internal/api/
 schema/
 └──  ent.graphql        # (generated, do not modify)
 ```
-```
+
 The `gen_*` files are never modified by hand. The `*.resolver.go` files are where you will add your business logic. The `schema/ent.graphql` file is where ent will generate the schema for the API. You then add your own schema files to the `schema/` directory. For example:
 
 ```bash
