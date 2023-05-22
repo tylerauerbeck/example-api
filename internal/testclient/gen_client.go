@@ -16,6 +16,7 @@ type TestClient interface {
 	ListTodos(ctx context.Context, id gidx.PrefixedID, orderBy *TodoOrder, httpRequestOptions ...client.HTTPRequestOption) (*ListTodos, error)
 	TodoCreate(ctx context.Context, input CreateTodoInput, httpRequestOptions ...client.HTTPRequestOption) (*TodoCreate, error)
 	TodoDelete(ctx context.Context, id gidx.PrefixedID, httpRequestOptions ...client.HTTPRequestOption) (*TodoDelete, error)
+	TodoUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateTodoInput, httpRequestOptions ...client.HTTPRequestOption) (*TodoUpdate, error)
 }
 
 type Client struct {
@@ -78,6 +79,17 @@ type TodoDelete struct {
 	TodoDelete struct {
 		DeletedID gidx.PrefixedID "json:\"deletedID\" graphql:\"deletedID\""
 	} "json:\"todoDelete\" graphql:\"todoDelete\""
+}
+type TodoUpdate struct {
+	TodoUpdate struct {
+		Todo struct {
+			ID          gidx.PrefixedID "json:\"id\" graphql:\"id\""
+			Name        string          "json:\"name\" graphql:\"name\""
+			Description *string         "json:\"description\" graphql:\"description\""
+			CreatedAt   time.Time       "json:\"createdAt\" graphql:\"createdAt\""
+			UpdatedAt   time.Time       "json:\"updatedAt\" graphql:\"updatedAt\""
+		} "json:\"todo\" graphql:\"todo\""
+	} "json:\"todoUpdate\" graphql:\"todoUpdate\""
 }
 
 const GetTodoDocument = `query GetTodo ($id: ID!) {
@@ -166,7 +178,7 @@ func (c *Client) TodoCreate(ctx context.Context, input CreateTodoInput, httpRequ
 	return &res, nil
 }
 
-const TodoDeleteDocument = `mutation todoDelete ($id: ID!) {
+const TodoDeleteDocument = `mutation TodoDelete ($id: ID!) {
 	todoDelete(id: $id) {
 		deletedID
 	}
@@ -179,7 +191,34 @@ func (c *Client) TodoDelete(ctx context.Context, id gidx.PrefixedID, httpRequest
 	}
 
 	var res TodoDelete
-	if err := c.Client.Post(ctx, "todoDelete", TodoDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+	if err := c.Client.Post(ctx, "TodoDelete", TodoDeleteDocument, &res, vars, httpRequestOptions...); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+const TodoUpdateDocument = `mutation TodoUpdate ($id: ID!, $input: UpdateTodoInput!) {
+	todoUpdate(id: $id, input: $input) {
+		todo {
+			id
+			name
+			description
+			createdAt
+			updatedAt
+		}
+	}
+}
+`
+
+func (c *Client) TodoUpdate(ctx context.Context, id gidx.PrefixedID, input UpdateTodoInput, httpRequestOptions ...client.HTTPRequestOption) (*TodoUpdate, error) {
+	vars := map[string]interface{}{
+		"id":    id,
+		"input": input,
+	}
+
+	var res TodoUpdate
+	if err := c.Client.Post(ctx, "TodoUpdate", TodoUpdateDocument, &res, vars, httpRequestOptions...); err != nil {
 		return nil, err
 	}
 

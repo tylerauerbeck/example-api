@@ -41,19 +41,19 @@ mutation TodoCreate($input: CreateTodoInput!) {
     }
 }
 
-# mutation TodoUpdate($input: UpdateTodoInput!) {
-#     todoUpdate(id: $id input: $input) {
-#         todo {
-#             id
-#             name
-#             description
-#             createdAt
-#             updatedAt
-#         }
-#     }
-# }
+mutation TodoUpdate($id: ID!,$input: UpdateTodoInput!) {
+    todoUpdate(id: $id input: $input) {
+        todo {
+            id
+            name
+            description
+            createdAt
+            updatedAt
+        }
+    }
+}
 
-mutation todoDelete($id: ID!){
+mutation TodoDelete($id: ID!){
     todoDelete(id: $id){
         deletedID
     }

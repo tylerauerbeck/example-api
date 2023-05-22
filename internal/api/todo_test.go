@@ -71,10 +71,16 @@ func TestQuery_todo(t *testing.T) {
 			}
 		})
 	}
+}
 
-	t.Run("Create + Delete", func(t *testing.T) {
+func Test_HappyPath(t *testing.T) {
+	client := graphTestClient()
+	ctx := context.Background()
+	tenantID := gidx.MustNewID("testtnt")
+
+	t.Run("Create + List + Update + Delete", func(t *testing.T) {
 		td, err := client.TodoCreate(ctx, testclient.CreateTodoInput{
-			Name:        "test",
+			Name:        gofakeit.JobTitle(),
 			Description: nil,
 			TenantID:    tenantID,
 		})
@@ -84,7 +90,18 @@ func TestQuery_todo(t *testing.T) {
 		list, err := client.ListTodos(ctx, tenantID, nil)
 		require.NoError(t, err)
 		require.NotNil(t, list)
-		assert.Len(t, list.Entities[0].Todo.Edges, 3)
+		assert.Len(t, list.Entities[0].Todo.Edges, 1)
+
+		tdUpdate, err := client.TodoUpdate(ctx, td.TodoCreate.Todo.ID, testclient.UpdateTodoInput{
+			Name:        newString(gofakeit.JobTitle()),
+			Description: newString(gofakeit.HackerPhrase()),
+		})
+
+		require.NoError(t, err)
+		require.NotNil(t, tdUpdate)
+
+		assert.NotEqual(t, td.TodoCreate.Todo.Name, tdUpdate.TodoUpdate.Todo.Name)
+		assert.NotEqual(t, td.TodoCreate.Todo.Description, tdUpdate.TodoUpdate.Todo.Description)
 
 		deleteID, err := client.TodoDelete(ctx, td.TodoCreate.Todo.ID)
 		require.NoError(t, err)
