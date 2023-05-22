@@ -25,7 +25,6 @@ const (
 var (
 	enablePlayground bool
 	serveDevMode     bool
-	pidFileName      = "/tmp/lba.pid"
 )
 
 var serveCmd = &cobra.Command{

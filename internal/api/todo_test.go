@@ -10,13 +10,19 @@ import (
 	"go.infratographer.com/x/gidx"
 
 	"go.infratographer.com/example-api/internal/ent/generated"
+	"go.infratographer.com/example-api/internal/testclient"
 )
 
 func TestQuery_todo(t *testing.T) {
+	client := graphTestClient()
 	ctx := context.Background()
-	td1 := (&TodoBuilder{}).MustNew(ctx)
+	tenantID := gidx.MustNewID("testtnt")
+	td1 := (&TodoBuilder{
+		TenantID: tenantID,
+	}).MustNew(ctx)
 	td2 := (&TodoBuilder{
 		Description: gofakeit.HackerPhrase(),
+		TenantID:    tenantID,
 	}).MustNew(ctx)
 
 	testCases := []struct {
@@ -27,12 +33,12 @@ func TestQuery_todo(t *testing.T) {
 		errorMsg       string
 	}{
 		{
-			name:         "happy path - td1",
+			name:         "happy path td1",
 			queryID:      td1.ID,
 			expextedTodo: td1,
 		},
 		{
-			name:           "happy path - td2",
+			name:           "happy path td2",
 			queryID:        td2.ID,
 			hasDescription: true,
 			expextedTodo:   td2,
@@ -45,8 +51,8 @@ func TestQuery_todo(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			resp, err := graphTestClient().GetTodo(ctx, tc.queryID)
+		t.Run("Create "+tc.name, func(t *testing.T) {
+			resp, err := client.GetTodo(ctx, tc.queryID)
 
 			if tc.errorMsg != "" {
 				require.Error(t, err)
@@ -65,4 +71,24 @@ func TestQuery_todo(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("Create + Delete", func(t *testing.T) {
+		td, err := client.TodoCreate(ctx, testclient.CreateTodoInput{
+			Name:        "test",
+			Description: nil,
+			TenantID:    tenantID,
+		})
+		require.NoError(t, err)
+		require.NotNil(t, td)
+
+		list, err := client.ListTodos(ctx, tenantID, nil)
+		require.NoError(t, err)
+		require.NotNil(t, list)
+		assert.Len(t, list.Entities[0].Todo.Edges, 3)
+
+		deleteID, err := client.TodoDelete(ctx, td.TodoCreate.Todo.ID)
+		require.NoError(t, err)
+		require.NotNil(t, deleteID)
+		assert.EqualValues(t, td.TodoCreate.Todo.ID, deleteID.TodoDelete.DeletedID)
+	})
 }

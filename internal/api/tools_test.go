@@ -26,7 +26,7 @@ import (
 	"go.infratographer.com/x/echojwtx"
 	"go.infratographer.com/x/echox"
 
-	"go.infratographer.com/example-api/x/testcontainersx"
+	"go.infratographer.com/load-balancer-api/x/testcontainersx"
 
 	"go.infratographer.com/example-api/internal/api"
 	ent "go.infratographer.com/example-api/internal/ent/generated"
@@ -157,17 +157,17 @@ type c struct {
 
 type clientOptions func(*c)
 
-func withGraphClientServerURL(url string) clientOptions {
-	return func(g *c) {
-		g.srvURL = url
-	}
-}
+// func withGraphClientServerURL(url string) clientOptions {
+// 	return func(g *c) {
+// 		g.srvURL = url
+// 	}
+// }
 
-func withGraphClientHTTPClient(httpcli *http.Client) clientOptions {
-	return func(g *c) {
-		g.httpClient = httpcli
-	}
-}
+// func withGraphClientHTTPClient(httpcli *http.Client) clientOptions {
+// 	return func(g *c) {
+// 		g.httpClient = httpcli
+// 	}
+// }
 
 func graphTestClient(options ...clientOptions) testclient.TestClient {
 	g := &c{
@@ -198,7 +198,7 @@ func (l localRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) 
 	return w.Result(), nil
 }
 
-func newTestServer(authConfig *echojwtx.AuthConfig) (*httptest.Server, error) {
+func newTestServer(authConfig *echojwtx.AuthConfig) (*httptest.Server, error) { //nolint:unused
 	echoCfg := echox.Config{}
 
 	if authConfig != nil {
@@ -221,14 +221,14 @@ func newTestServer(authConfig *echojwtx.AuthConfig) (*httptest.Server, error) {
 	return httptest.NewServer(srv.Handler()), nil
 }
 
-func newString(s string) *string {
-	return &s
-}
+// func newString(s string) *string {
+// 	return &s
+// }
 
-func newBool(b bool) *bool {
-	return &b
-}
+// func newBool(b bool) *bool {
+// 	return &b
+// }
 
-func newInt64(i int64) *int64 {
-	return &i
-}
+// func newInt64(i int64) *int64 {
+// 	return &i
+// }
