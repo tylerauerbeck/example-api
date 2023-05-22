@@ -101,7 +101,7 @@ internal/testclient
 The `schema.graphql` file is the schema for the API that globs `schema/*graphql` and adds bits for federation. The `internal/testclient/*.gql` directory contains the code to test the API. You will add the `queries` and `mutations` you want to use in your tests.
 At this point, you can start taking a look at the `api_test` package to see how the `testclient` and `api` are used. It's important to remember that with GraphQL the client isn't hitting predefined endpoints, but making requests for connected nodes on the graph. This means that the `testclient` is a bit different than what you might be used to with REST APIs.
 
- ## Development and Contributing
+## Development and Contributing
 
 * [Development Guide](docs/development.md)
 * [Contributing](https://infratographer.com/community/contributing/)
