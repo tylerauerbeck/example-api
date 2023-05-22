@@ -31,7 +31,7 @@ If you use devcontainers, you can use the `.devcontainer` directory to get start
 * [VSCode](https://code.visualstudio.com/download)
 * [VSCode Remote Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
-While these are not required, they are recommended as the `devcontainer ` captures a working development environment that will make it easier to get started.
+While these are not required, they are recommended as the `devcontainer` captures a working development environment that will make it easier to get started.
 
 
 ## Getting started
