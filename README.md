@@ -51,6 +51,7 @@ You will then provide a few files to get started by copying the following:
 
 ```bash
 generate.go
+gen_schema.go
 internal/api/
 └── doc.go    # This will ensure that gqlgen can write to this directory
 internal/ent/
@@ -61,6 +62,11 @@ internal/ent/
 │   └── todo.go
 schema
 └── .gitkeep   # This will ensure ent can write to this directory
+```
+
+In order to have the new app, packages etc. named properly, you can rename all occurances of `example-api` to `your-app-name`:
+```bash
+find . -type f | xargs sed -i 's|example-api|your-app-name|g'
 ```
 
 Run `go generate ./...`. This will generate the `ent` schema and code. (The generate will exit in failure at this point, but that's ok.)
@@ -81,7 +87,7 @@ schema/
 └──  ent.graphql        # (generated, do not modify)
 ```
 
-The `gen_*` files are never modified by hand. The `*.resolver.go` files are where you will add your business logic. The `schema/ent.graphql` file is where ent will generate the schema for the API. You then add your own schema files to the `schema/` directory. For example:
+The `gen_*` files are never modified by hand (apart from `gen_schema.go`, which should have been copied). The `*.resolver.go` files are where you will add your business logic. The `schema/ent.graphql` file is where ent will generate the schema for the API. You then add your own schema files to the `schema/` directory. For example:
 
 ```bash
 schema

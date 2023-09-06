@@ -27,7 +27,7 @@ import (
 	"go.infratographer.com/x/gidx"
 )
 
-// Represents an todo todo on the graph.
+// Represents a todo todo on the graph.
 type Todo struct {
 	config `json:"-"`
 	// ID of the ent.

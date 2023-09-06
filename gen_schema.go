@@ -31,10 +31,12 @@ func main() {
 	schema := execSchema.Schema()
 
 	// Some of our federation fields get marked as "BuiltIn" by gengql and the formatter doesn't print builtin types, this adds them for us.
-	entities := schema.Types["_Entity"]
-	entities.BuiltIn = false
-	service := schema.Types["_Service"]
-	service.BuiltIn = false
+	if entities := schema.Types["_Entity"]; entities != nil {
+		entities.BuiltIn = false
+	}
+	if service := schema.Types["_Service"]; service != nil {
+		service.BuiltIn = false
+	}
 	// entities.Position.Src.BuiltIn = false
 
 	f, err := os.Create("schema.graphql")
