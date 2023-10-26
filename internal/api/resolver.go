@@ -85,7 +85,7 @@ func (h *Handler) Routes(e *echo.Group) {
 
 	if h.playground != nil {
 		e.GET("/"+vizPath, func(c echo.Context) error {
-			return c.File(vizPath)
+			return c.File(vizFile)
 		})
 
 		handlers, err := h.playground.Handlers()
